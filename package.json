@@ -1,0 +1,26 @@
+{
+  "name": "cobblestone.js",
+  "version": "1.0.0",
+  "description": "A Minecraft Server written in Javascript",
+  "main": "index.js",
+  "scripts": {
+    "docs": "./node_modules/.bin/jsdoc -c jsdoc.json",
+    "start": "node index.js"
+  },
+  "author": "Vavaballz",
+  "license": "ISC",
+  "dependencies": {
+    "iconv-lite": "^0.4.17",
+    "int64-buffer": "^0.1.9",
+    "request": "^2.81.0",
+    "request-promise-native": "^1.0.3",
+    "ursa": "^0.9.4",
+    "uuid-1345": "^0.99.6",
+    "yggdrasil": "^0.2.0"
+  },
+  "devDependencies": {
+    "jsdoc": "^3.4.3",
+    "jsdoc-strip-async-await": "^0.1.0",
+    "minami": "^1.2.3"
+  }
+}
