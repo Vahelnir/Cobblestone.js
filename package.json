@@ -8,7 +8,7 @@
     "start": "node index.js"
   },
   "author": "Vavaballz",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "iconv-lite": "^0.4.17",
     "int64-buffer": "^0.1.9",
