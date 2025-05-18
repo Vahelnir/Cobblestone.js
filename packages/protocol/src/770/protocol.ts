@@ -7,54 +7,54 @@ import type { ClientPacketMap, ServerPacketMap } from "./types.js";
 const TypeMappings = defineTypeMappings({
   byte: {
     type: "number",
-    read: (buffer: CustomBuffer) => buffer.readByte(),
-    write: (buffer: CustomBuffer, value: number) => buffer.writeByte(value),
+    read: (buffer) => buffer.readByte(),
+    write: (buffer, value) => buffer.writeByte(value),
   },
   unsigned_byte: {
     type: "number",
-    read: (buffer: CustomBuffer) => buffer.readUnsignedByte(),
-    write: (buffer: CustomBuffer, value: number) =>
-      buffer.writeUnsignedByte(value),
+    read: (buffer) => buffer.readUnsignedByte(),
+    write: (buffer, value) => buffer.writeUnsignedByte(value),
   },
   boolean: {
     type: "boolean",
-    read: (buffer: CustomBuffer) => buffer.readBoolean(),
-    write: (buffer: CustomBuffer, value: boolean) => buffer.writeBoolean(value),
+    read: (buffer) => buffer.readBoolean(),
+    write: (buffer, value) => buffer.writeBoolean(value),
   },
   short: {
     type: "number",
-    read: (buffer: CustomBuffer) => buffer.readShort(),
-    write: (buffer: CustomBuffer, value: number) => buffer.writeShort(value),
+    read: (buffer) => buffer.readShort(),
+    write: (buffer, value) => buffer.writeShort(value),
   },
   unsigned_short: {
     type: "number",
-    read: (buffer: CustomBuffer) => buffer.readUnsignedShort(),
-    write: (buffer: CustomBuffer, value: number) =>
-      buffer.writeUnsignedShort(value),
+    read: (buffer) => buffer.readUnsignedShort(),
+    write: (buffer, value) => buffer.writeUnsignedShort(value),
   },
   long: {
     type: "bigint",
-    read: (buffer: CustomBuffer) => buffer.readLong(),
-    write: (buffer: CustomBuffer, value: bigint) => buffer.writeLong(value),
+    read: (buffer) => buffer.readLong(),
+    write: (buffer, value) => buffer.writeLong(value),
   },
   varint: {
     type: "number",
-    read: (buffer: CustomBuffer) => buffer.readVarInt(),
-    write: (buffer: CustomBuffer, value: number) => buffer.writeVarInt(value),
+    read: (buffer) => buffer.readVarInt(),
+    write: (buffer, value) => buffer.writeVarInt(value),
   },
   varlong: {
     type: "bigint",
-    read: (buffer: CustomBuffer) => buffer.readVarLong(),
-    write: (buffer: CustomBuffer, value: bigint) => buffer.writeVarLong(value),
+    read: (buffer) => buffer.readVarLong(),
+    write: (buffer, value) => buffer.writeVarLong(value),
   },
   string: {
     type: "string",
-    read: (buffer: CustomBuffer) => buffer.readString(),
-    write: (buffer: CustomBuffer, value: string) => buffer.writeString(value),
+    read: (buffer) => buffer.readString(),
+    write: (buffer, value) => buffer.writeString(value),
   },
 });
 
-const handshaking: ProtocolStateDeclaration<typeof TypeMappings> = {
+type AllowedTypes = keyof typeof TypeMappings;
+
+const handshaking: ProtocolStateDeclaration<AllowedTypes> = {
   id: 0x00,
   name: "handshaking",
   packets: {
@@ -91,7 +91,7 @@ const handshaking: ProtocolStateDeclaration<typeof TypeMappings> = {
   },
 };
 
-const status: ProtocolStateDeclaration<typeof TypeMappings> = {
+const status: ProtocolStateDeclaration<AllowedTypes> = {
   id: 0x01,
   name: "status",
   packets: {
@@ -122,11 +122,7 @@ const status: ProtocolStateDeclaration<typeof TypeMappings> = {
   },
 };
 
-const protocol: Protocol<
-  typeof TypeMappings,
-  ServerPacketMap,
-  ClientPacketMap
-> = {
+const protocol: Protocol<ServerPacketMap, ClientPacketMap> = {
   version: 770,
   types: TypeMappings,
   states: {

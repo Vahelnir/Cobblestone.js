@@ -1,24 +1,25 @@
 import type { ConnectionState } from "./index.js";
+import type { TypeMappingsDeclaration } from "./type_mappings.js";
 
-export type PacketSchemaItem<TypeMapping> = {
+export type PacketSchemaItem<Types extends string = string> = {
   name: string;
-  type: keyof TypeMapping;
+  type: Types;
   length?: number;
 };
-export type PacketSchema<TypeMapping> = PacketSchemaItem<TypeMapping>[];
+export type PacketSchema<Types extends string> = PacketSchemaItem<Types>[];
 
-export type PacketDeclaration<TypeMapping> = {
+export type PacketDeclaration<Types extends string> = {
   id: number;
   name: string;
-  schema: PacketSchema<TypeMapping>;
+  schema: PacketSchema<Types>;
   handle?: (state: ConnectionState, packet: any) => void;
 };
 
-export type ProtocolStateDeclaration<TypeMapping> = {
+export type ProtocolStateDeclaration<Types extends string> = {
   id: number;
   name: string;
   packets: {
-    serverbound: Record<number, PacketDeclaration<TypeMapping>>;
-    clientbound: Record<number, PacketDeclaration<TypeMapping>>;
+    serverbound: Record<number, PacketDeclaration<Types>>;
+    clientbound: Record<number, PacketDeclaration<Types>>;
   };
 };

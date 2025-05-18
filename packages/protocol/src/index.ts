@@ -6,15 +6,14 @@ import type { TypeMappingsDeclaration } from "./type_mappings.js";
 import type { ProtocolStateDeclaration } from "./types.js";
 
 export type Protocol<
-  T,
   ServerPackets = Record<string, unknown>,
   ClientPackets = Record<string, unknown>,
 > = {
   __serverPackets: ServerPackets;
   __clientPackets: ClientPackets;
   version: number;
-  types: T;
-  states: Record<number, ProtocolStateDeclaration<T>>;
+  types: TypeMappingsDeclaration;
+  states: Record<number, ProtocolStateDeclaration<any>>;
 };
 
 export type Packet<D = any> = {
