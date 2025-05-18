@@ -7,10 +7,7 @@
     "includePattern": ".js$",
     "excludePattern": "(node_modules/|docs)"
   },
-  "plugins": [
-    "plugins/markdown",
-    "node_modules/jsdoc-strip-async-await"
-  ],
+  "plugins": ["plugins/markdown", "node_modules/jsdoc-strip-async-await"],
   "opts": {
     "template": "./node_modules/minami",
     "encoding": "utf8",

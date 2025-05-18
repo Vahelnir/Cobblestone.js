@@ -1,0 +1,26 @@
+{
+  "name": "@cobblestonejs/protocol",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "development": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./custom_buffer": {
+      "types": "./src/custom_buffer.ts",
+      "development": "./src/custom_buffer.ts",
+      "default": "./dist/custom_buffer.js"
+    },
+    "./770": {
+      "types": "./src/770/protocol.ts",
+      "development": "./src/770/protocol.ts",
+      "default": "./dist/770/protocol.js"
+    }
+  },
+  "scripts": {},
+  "keywords": [],
+  "author": "Vahelnir",
+  "license": "MIT"
+}
