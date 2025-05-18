@@ -11,6 +11,7 @@ export type ClientPacketMap = {
   };
 };
 export type ClientPackets = ClientPacketMap[keyof ClientPacketMap];
+
 export type ServerPacketMap = {
   "handshaking:handshake": {
     id: 0;
@@ -30,4 +31,5 @@ export type ServerPacketMap = {
   };
 };
 export type ServerPackets = ServerPacketMap[keyof ServerPacketMap];
+
 export type AllPackets = ClientPackets | ServerPackets;

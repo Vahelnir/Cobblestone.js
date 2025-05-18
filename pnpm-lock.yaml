@@ -35,9 +35,16 @@ importers:
 
   packages/type-generator:
     dependencies:
+      '@cobblestonejs/protocol':
+        specifier: workspace:*
+        version: link:../protocol
       commander:
         specifier: ^14.0.0
         version: 14.0.0
+    devDependencies:
+      prettier:
+        specifier: ^3.5.3
+        version: 3.5.3
 
 packages:
 

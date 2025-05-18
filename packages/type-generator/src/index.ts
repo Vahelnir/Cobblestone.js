@@ -2,6 +2,7 @@ import { writeFile } from "fs/promises";
 import { resolve } from "path";
 import type { Protocol } from "@cobblestonejs/protocol";
 import { Command } from "commander";
+import { format } from "prettier";
 
 import type { TypeMappingsDeclaration } from "../../protocol/src/type_mappings.js";
 import type { PacketSchema } from "../../protocol/src/types.js";
@@ -53,11 +54,16 @@ program
     // TODO: use prettier to format the output
     await writeFile(
       resolve(source, "types.ts"),
-      `export type ClientPacketMap = { ${clientPackets} }
+      await format(
+        `export type ClientPacketMap = { ${clientPackets} }
        export type ClientPackets = ClientPacketMap[keyof ClientPacketMap];
+
        export type ServerPacketMap = { ${serverPackets} }
        export type ServerPackets = ServerPacketMap[keyof ServerPacketMap];
+
        export type AllPackets = ClientPackets | ServerPackets`,
+        { parser: "typescript" },
+      ),
     );
   });
 

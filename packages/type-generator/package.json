@@ -10,7 +10,10 @@
   "author": "Vahelnir",
   "license": "MIT",
   "dependencies": {
-    "commander": "^14.0.0",
-    "@cobblestonejs/protocol": "workspace:*"
+    "@cobblestonejs/protocol": "workspace:*",
+    "commander": "^14.0.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3"
   }
 }
