@@ -1,9 +1,6 @@
 import { createServer, Socket } from "node:net";
 import { createClient } from "@cobblestonejs/protocol";
 import protocol770 from "@cobblestonejs/protocol/770";
-import { CustomBuffer } from "@cobblestonejs/protocol/custom_buffer";
-
-import { Client } from "./client.js";
 
 export class Server {
   public server: ReturnType<typeof createServer>;
@@ -23,7 +20,7 @@ export class Server {
   private onConnection(socket: Socket) {
     console.log("New client connected");
     const client = createClient("serverbound", socket, protocol770);
-    client.on("status:status_request", (packet) => {
+    client.on("status:status_request", () => {
       console.log("Received status request");
       client.send("status:status_response", {
         jsonResponse: JSON.stringify({

@@ -1,11 +1,17 @@
-import { EventEmitter } from "node:events";
 import type { Socket } from "node:net";
 
+import { Connection } from "./connection.js";
 import { CustomBuffer } from "./custom_buffer.js";
 import type { TypeMappingsDeclaration } from "./type_mappings.js";
 import type { ProtocolStateDeclaration } from "./types.js";
 
-export type Protocol<T> = {
+export type Protocol<
+  T,
+  ServerPackets = Record<string, unknown>,
+  ClientPackets = Record<string, unknown>,
+> = {
+  __serverPackets: ServerPackets;
+  __clientPackets: ClientPackets;
   version: number;
   types: T;
   states: Record<number, ProtocolStateDeclaration<T>>;
@@ -17,91 +23,31 @@ export type Packet<D = any> = {
   data: D;
 };
 
-export type ConnectionState<
-  P extends
-    Protocol<TypeMappingsDeclaration> = Protocol<TypeMappingsDeclaration>,
-> = {
+export type ConnectionState<P extends Protocol<any> = Protocol<any>> = {
   bound: "clientbound" | "serverbound";
   protocol: P;
   protocolState: number;
   version: number | undefined;
 };
 
-export function createClient<P extends Protocol<any>>(
+export function createClient<
+  B extends "clientbound" | "serverbound",
+  P extends Protocol<any>,
+>(bound: B, socket: Socket, protocol: P): Connection<P, B>;
+export function createClient(
   bound: "clientbound" | "serverbound",
   socket: Socket,
-  protocol: P,
+  protocol: Protocol<any>,
 ) {
-  const state: ConnectionState<P> = {
-    bound,
-    protocol,
-    protocolState: 0,
-    version: undefined,
-  };
-  const eventEmitter = new EventEmitter();
-
-  socket.on("data", (buffer) => {
-    console.log("Data received from client:", buffer);
-    const customBuffer = new CustomBuffer(buffer);
-    while (customBuffer.bytesAvailable > 0) {
-      const packet = parse(state, customBuffer);
-      console.log("Parsed packet:", packet);
-      eventEmitter.emit(packet.name, packet);
-    }
-  });
-
-  return Object.assign(eventEmitter, {
-    send(name: string, data: any) {
-      console.log("Sending packet:", name, data);
-      const packetName = name.split(":")[1];
-      // TODO: pre-computed a map of packet names to ids
-      // find the packet declaration of the given packet name
-      const packet = Object.values(
-        state.protocol.states[state.protocolState].packets[
-          state.bound === "clientbound" ? "serverbound" : "clientbound"
-        ],
-      ).find((packet) => packet.name === packetName);
-      if (!packet) {
-        throw new Error(
-          `Packet "${packetName}" not found in state ${state.protocolState}`,
-        );
-      }
-
-      // serializing
-      const packetBuffer = new CustomBuffer();
-      packetBuffer.writeVarInt(packet.id);
-      for (const field of packet.schema) {
-        const type = state.protocol.types[field.type];
-        if (!type) {
-          throw new Error(`Type ${field.type.toString()} not found`);
-        }
-
-        const name = field.name;
-        if (data[name] === undefined) {
-          throw new Error(`Field ${name} is missing from packet data`);
-        }
-        type.write(packetBuffer, data[name]);
-      }
-
-      // adding the length to the packet
-      const packetWithLength = new CustomBuffer();
-      packetWithLength.writeVarInt(packetBuffer.length);
-      packetWithLength.writeBytes(packetBuffer);
-
-      // sending the packet
-      socket.write(packetWithLength.buffer);
-
-      // try parsing the packet to see if it works
-      // const parsedPacket = parse(
-      //   {
-      //     ...state,
-      //     bound: state.bound === "clientbound" ? "serverbound" : "clientbound",
-      //   },
-      //   packetWithLength,
-      // );
-      // console.log("Sent packet parsed:", parsedPacket);
+  return new Connection(
+    {
+      bound,
+      protocol,
+      protocolState: 0,
+      version: undefined,
     },
-  });
+    socket,
+  );
 }
 
 export function parse<P extends Protocol<any>>(

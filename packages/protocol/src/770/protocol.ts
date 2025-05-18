@@ -2,6 +2,7 @@ import { CustomBuffer } from "../custom_buffer.js";
 import type { Packet, Protocol } from "../index.js";
 import { defineTypeMappings } from "../type_mappings.js";
 import type { ProtocolStateDeclaration } from "../types.js";
+import type { ClientPacketMap, ServerPacketMap } from "./types.js";
 
 const TypeMappings = defineTypeMappings({
   byte: {
@@ -121,11 +122,19 @@ const status: ProtocolStateDeclaration<typeof TypeMappings> = {
   },
 };
 
-export default {
+const protocol: Protocol<
+  typeof TypeMappings,
+  ServerPacketMap,
+  ClientPacketMap
+> = {
   version: 770,
   types: TypeMappings,
   states: {
     0: handshaking,
     1: status,
   },
-} satisfies Protocol<typeof TypeMappings>;
+  __serverPackets: {} as ServerPacketMap,
+  __clientPackets: {} as ClientPacketMap,
+};
+
+export default protocol;

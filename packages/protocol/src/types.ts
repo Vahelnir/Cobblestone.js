@@ -1,13 +1,16 @@
 import type { ConnectionState } from "./index.js";
 
+export type PacketSchemaItem<TypeMapping> = {
+  name: string;
+  type: keyof TypeMapping;
+  length?: number;
+};
+export type PacketSchema<TypeMapping> = PacketSchemaItem<TypeMapping>[];
+
 export type PacketDeclaration<TypeMapping> = {
   id: number;
   name: string;
-  schema: {
-    name: string;
-    type: keyof TypeMapping;
-    length?: number;
-  }[];
+  schema: PacketSchema<TypeMapping>;
   handle?: (state: ConnectionState, packet: any) => void;
 };
 

@@ -1,0 +1,16 @@
+{
+  "name": "@cobblestonejs/type-generator",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "cli": "tsx ./src/index.ts"
+  },
+  "keywords": [],
+  "author": "Vahelnir",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^14.0.0",
+    "@cobblestonejs/protocol": "workspace:*"
+  }
+}
