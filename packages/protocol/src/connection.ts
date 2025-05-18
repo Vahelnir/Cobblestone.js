@@ -32,6 +32,16 @@ export class Connection<
     });
   }
 
+  send<
+    N extends keyof P[Bound extends "clientbound"
+      ? "__serverPackets"
+      : "__clientPackets"],
+  >(
+    name: N,
+    data: P[Bound extends "clientbound"
+      ? "__clientPackets"
+      : "__serverPackets"][N],
+  ): void;
   send(name: string, data: any) {
     console.log("Sending packet:", name, data);
     const packetName = name.split(":")[1];
