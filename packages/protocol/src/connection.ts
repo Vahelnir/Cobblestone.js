@@ -39,8 +39,10 @@ export class Connection<
   >(
     name: N,
     data: P[Bound extends "clientbound"
-      ? "__clientPackets"
-      : "__serverPackets"][N],
+      ? "__serverPackets"
+      : "__clientPackets"][N] extends { data: infer D }
+      ? D
+      : unknown,
   ): void;
   send(name: string, data: any) {
     console.log("Sending packet:", name, data);

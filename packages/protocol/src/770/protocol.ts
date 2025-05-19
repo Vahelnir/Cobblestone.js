@@ -1,10 +1,13 @@
 import { CustomBuffer } from "../custom_buffer.js";
 import type { Packet, Protocol } from "../index.js";
-import { defineTypeMappings } from "../type_mappings.js";
+import {
+  defineTypeMappings,
+  type TypeMappingsDeclaration,
+} from "../type_mappings.js";
 import type { ProtocolStateDeclaration } from "../types.js";
 import type { ClientPacketMap, ServerPacketMap } from "./types.js";
 
-const TypeMappings = defineTypeMappings({
+const types = defineTypeMappings({
   byte: {
     type: "number",
     read: (buffer) => buffer.readByte(),
@@ -52,7 +55,7 @@ const TypeMappings = defineTypeMappings({
   },
 });
 
-type AllowedTypes = keyof typeof TypeMappings;
+type AllowedTypes = keyof typeof types;
 
 const handshaking: ProtocolStateDeclaration<AllowedTypes> = {
   id: 0x00,
@@ -122,15 +125,29 @@ const status: ProtocolStateDeclaration<AllowedTypes> = {
   },
 };
 
-const protocol: Protocol<ServerPacketMap, ClientPacketMap> = {
+function defineProtocol<
+  T extends {
+    server: Record<string, any>;
+    client: Record<string, any>;
+  },
+>(protocol: {
+  version: number;
+  types: TypeMappingsDeclaration;
+  states: Record<number, ProtocolStateDeclaration<AllowedTypes>>;
+}): Protocol<T["server"], T["client"]> {
+  return protocol as any;
+}
+
+const protocol = defineProtocol<{
+  server: ServerPacketMap;
+  client: ClientPacketMap;
+}>({
   version: 770,
-  types: TypeMappings,
+  types,
   states: {
     0: handshaking,
     1: status,
   },
-  __serverPackets: {} as ServerPacketMap,
-  __clientPackets: {} as ClientPacketMap,
-};
+});
 
 export default protocol;
