@@ -1,35 +1,26 @@
 import { CustomBuffer } from "./custom_buffer.js";
 
-export type TypeMappingsDeclaration = {
-  [key: string]: TypeMappingDeclaration<any>;
+type TypeMappingDeclaration<P extends keyof Primitives> = {
+  type: P;
+  read: (buffer: CustomBuffer) => Primitives[P];
+  write: (buffer: CustomBuffer, value: Primitives[P]) => CustomBuffer;
 };
 
-type TypeMappingDeclaration<Primitive extends keyof Primitives> = {
-  type: Primitive;
-  read: (buffer: CustomBuffer) => Primitives[Primitive];
-  write: (buffer: CustomBuffer, value: Primitives[Primitive]) => CustomBuffer;
+// This mapped type ensures each mapping's `type` property matches its read/write signatures
+export type TypeMappingsDeclaration<
+  T extends { [K in keyof T]: keyof Primitives },
+> = {
+  [K in keyof T]: TypeMappingDeclaration<T[K]>;
 };
-
-type InferTypeMapping<T extends { type: keyof Primitives }> = T extends {
-  type: infer P;
-}
-  ? P extends keyof Primitives
-    ? {
-        type: P;
-        read: (buffer: CustomBuffer) => Primitives[P];
-        write: (buffer: CustomBuffer, value: Primitives[P]) => CustomBuffer;
-      }
-    : never
-  : never;
 
 export function defineTypeMappings<
-  T extends Record<string, { type: keyof Primitives }>,
->(mappings: { [K in keyof T]: InferTypeMapping<T[K]> }): {
-  [K in keyof T]: InferTypeMapping<T[K]>;
-};
+  T extends { [K in keyof T]: keyof Primitives },
+>(mappings: {
+  [K in keyof T]: TypeMappingDeclaration<T[K]>;
+}): TypeMappingsDeclaration<T>;
 export function defineTypeMappings(
-  mappings: TypeMappingsDeclaration,
-): TypeMappingsDeclaration {
+  mappings: TypeMappingsDeclaration<any>,
+): TypeMappingsDeclaration<any> {
   return mappings;
 }
 
