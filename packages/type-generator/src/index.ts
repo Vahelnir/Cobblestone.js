@@ -1,11 +1,9 @@
 import { writeFile } from "fs/promises";
 import { resolve } from "path";
-import type { Protocol } from "@cobblestonejs/protocol";
 import { Command } from "commander";
 import { format } from "prettier";
 
-import type { TypeMappingsDeclaration } from "../../protocol/src/type_mappings.js";
-import type { PacketSchema } from "../../protocol/src/types.js";
+import type { Protocol } from "../../protocol/src/protocol-definition/protocol.js";
 
 const program = new Command();
 program
@@ -22,19 +20,37 @@ program
     const protocolFilePath = resolve(source, "protocol.ts");
     const module = await import(protocolFilePath);
 
-    const protocol = module.default as Protocol<TypeMappingsDeclaration>;
+    const protocol = module.default as Protocol;
 
     const packets = {
       clientbound: [] as { id: number; name: string; data: string }[],
       serverbound: [] as { id: number; name: string; data: string }[],
     };
+
+    const typeDeclarations = new Set<string>();
+
     for (const state of Object.values(protocol.states)) {
+      if (!state) {
+        console.warn(
+          `State '${state}' does not have packets defined, skipping.`,
+        );
+        continue;
+      }
+
       for (const bound of ["clientbound", "serverbound"] as const) {
         for (const packet of Object.values(state.packets[bound])) {
+          const rawTypegen = packet.schema.typegen?.();
+          const typegen =
+            rawTypegen instanceof Promise ? await rawTypegen : rawTypegen;
+          const type = typegen?.type ?? "unknown";
+          typegen?.declarations?.forEach((declaration) =>
+            typeDeclarations.add(declaration),
+          );
+
           packets[bound].push({
             id: packet.id,
             name: `${state.name}:${packet.name}`,
-            data: schemaToType(protocol.types, packet.schema),
+            data: type,
           });
         }
       }
@@ -51,37 +67,20 @@ program
       })
       .join(";\n");
     console.log(`Protocol file path: ${protocolFilePath}`);
-    // TODO: use prettier to format the output
-    await writeFile(
-      resolve(source, "types.ts"),
-      await format(
-        `export type ClientPacketMap = { ${clientPackets} }
+
+    const content = await format(
+      `${Array.from(typeDeclarations).join("\n")}
+        
+       export type ClientPacketMap = { ${clientPackets} }
        export type ClientPackets = ClientPacketMap[keyof ClientPacketMap];
 
        export type ServerPacketMap = { ${serverPackets} }
        export type ServerPackets = ServerPacketMap[keyof ServerPacketMap];
 
        export type AllPackets = ClientPackets | ServerPackets`,
-        { parser: "typescript" },
-      ),
+      { parser: "typescript" },
     );
+    await writeFile(resolve(source, "types.ts"), content);
   });
 
 program.parse();
-
-function schemaToType(
-  types: TypeMappingsDeclaration,
-  schema: PacketSchema<any>,
-) {
-  const properties = schema
-    .map((item) => {
-      const type = types[item.type.toString()];
-      if (!type) {
-        return;
-      }
-      return `${item.name}: ${type.type}`;
-    })
-    .filter((item) => item !== undefined)
-    .join("; ");
-  return `{ ${properties} }`;
-}

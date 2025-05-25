@@ -2,7 +2,13 @@ export type ClientPacketMap = {
   "status:status_response": {
     id: 0;
     name: "status:status_response";
-    data: { jsonResponse: string };
+    data: {
+      jsonResponse: {
+        version: { name: string; protocol: number };
+        players: { max: number; online: number };
+        description: { text: string };
+      };
+    };
   };
   "status:pong_response": {
     id: 1;

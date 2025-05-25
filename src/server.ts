@@ -23,7 +23,7 @@ export class Server {
     client.on("status:status_request", () => {
       console.log("Received status request");
       client.send("status:status_response", {
-        jsonResponse: JSON.stringify({
+        jsonResponse: {
           version: {
             name: "1.21.5",
             protocol: 770,
@@ -35,7 +35,7 @@ export class Server {
           description: {
             text: "Hello Rising!",
           },
-        }),
+        },
       });
     });
 

@@ -1,20 +1,8 @@
 import type { Socket } from "node:net";
 
 import { Connection } from "./connection.js";
-import { CustomBuffer } from "./custom_buffer.js";
-import type { TypeMappingsDeclaration } from "./type_mappings.js";
-import type { ProtocolStateDeclaration } from "./types.js";
-
-export type Protocol<
-  ServerPackets = Record<string, unknown>,
-  ClientPackets = Record<string, unknown>,
-> = {
-  __serverPackets: ServerPackets;
-  __clientPackets: ClientPackets;
-  version: number;
-  types: TypeMappingsDeclaration;
-  states: Record<number, ProtocolStateDeclaration<any>>;
-};
+import { CustomBuffer } from "./custom-buffer.js";
+import type { Protocol } from "./protocol-definition/protocol.js";
 
 export type Packet<D = any> = {
   id: number;
@@ -22,7 +10,7 @@ export type Packet<D = any> = {
   data: D;
 };
 
-export type ConnectionState<P extends Protocol<any> = Protocol<any>> = {
+export type ConnectionState<P extends Protocol = Protocol> = {
   bound: "clientbound" | "serverbound";
   protocol: P;
   protocolState: number;
@@ -31,12 +19,12 @@ export type ConnectionState<P extends Protocol<any> = Protocol<any>> = {
 
 export function createClient<
   B extends "clientbound" | "serverbound",
-  P extends Protocol<any>,
+  P extends Protocol,
 >(bound: B, socket: Socket, protocol: P): Connection<P, B>;
 export function createClient(
   bound: "clientbound" | "serverbound",
   socket: Socket,
-  protocol: Protocol<any>,
+  protocol: Protocol,
 ) {
   return new Connection(
     {
@@ -49,14 +37,14 @@ export function createClient(
   );
 }
 
-export function parse<P extends Protocol<any>>(
+export function parse<P extends Protocol>(
   connectionState: ConnectionState<P>,
   buffer: Buffer | CustomBuffer,
 ): any;
-export function parse(
-  state: ConnectionState<Protocol<TypeMappingsDeclaration>>,
+export async function parse(
+  state: ConnectionState<Protocol>,
   buffer: Buffer | CustomBuffer,
-): any {
+): Promise<any> {
   const customBuffer =
     buffer instanceof CustomBuffer ? buffer : new CustomBuffer(buffer);
   const length = customBuffer.readVarInt();
@@ -66,6 +54,11 @@ export function parse(
   const rawPacket = customBuffer.readCustomBuffer(remainingLength);
 
   const protocolStateDeclaration = state.protocol.states[state.protocolState];
+  if (!protocolStateDeclaration) {
+    throw new Error(
+      `Protocol state ${state.protocolState} not found in protocol.`,
+    );
+  }
   const packetDeclaration =
     protocolStateDeclaration.packets[state.bound][packetId];
   if (!packetDeclaration) {
@@ -74,24 +67,15 @@ export function parse(
     );
   }
 
-  const data = packetDeclaration.schema.reduce((acc, field) => {
-    const type = state.protocol.types[field.type];
-    if (!type) {
-      throw new Error(`Type ${field.type} not found`);
-    }
-
-    const value = type.read(rawPacket);
-    return { ...acc, [field.name]: value };
-  }, {} as any);
+  const data = await packetDeclaration.schema.read(rawPacket);
 
   const packet = {
     id: packetId,
     name: `${protocolStateDeclaration.name}:${packetDeclaration.name}`,
     data,
   };
-  if (packetDeclaration.handle) {
-    packetDeclaration.handle(state, packet);
-  }
+
+  packetDeclaration.beforeEvent?.(state, packet);
 
   return packet;
 }

@@ -1,11 +1,12 @@
 import EventEmitter from "node:events";
 import type { Socket } from "node:net";
 
-import { CustomBuffer } from "./custom_buffer.js";
-import { parse, type ConnectionState, type Protocol } from "./index.js";
+import { CustomBuffer } from "./custom-buffer.js";
+import { parse, type ConnectionState } from "./index.js";
+import type { Protocol } from "./protocol-definition/protocol.js";
 
 export class Connection<
-  P extends Protocol<any> = Protocol<any>,
+  P extends Protocol = Protocol,
   Bound extends "clientbound" | "serverbound" = "clientbound" | "serverbound",
 > extends EventEmitter<{
   [K in keyof P[Bound extends "clientbound"
@@ -20,11 +21,11 @@ export class Connection<
   ) {
     super();
 
-    socket.on("data", (buffer) => {
+    socket.on("data", async (buffer) => {
       console.log("Data received from client:", buffer);
       const customBuffer = new CustomBuffer(buffer);
       while (customBuffer.bytesAvailable > 0) {
-        const packet = parse(state, customBuffer);
+        const packet = await parse(state, customBuffer);
         console.log("Parsed packet:", packet);
         // @ts-expect-error
         this.emit(packet.name, packet);
@@ -49,8 +50,15 @@ export class Connection<
     const packetName = name.split(":")[1];
     // TODO: pre-computed a map of packet names to ids
     // find the packet declaration of the given packet name
+    const currentState = this.state.protocol.states[this.state.protocolState];
+    if (!currentState) {
+      throw new Error(
+        `Protocol state ${this.state.protocolState} not found in protocol`,
+      );
+    }
+
     const packet = Object.values(
-      this.state.protocol.states[this.state.protocolState].packets[
+      currentState.packets[
         this.state.bound === "clientbound" ? "serverbound" : "clientbound"
       ],
     ).find((packet) => packet.name === packetName);
@@ -63,18 +71,7 @@ export class Connection<
     // serializing
     const packetBuffer = new CustomBuffer();
     packetBuffer.writeVarInt(packet.id);
-    for (const field of packet.schema) {
-      const type = this.state.protocol.types[field.type];
-      if (!type) {
-        throw new Error(`Type ${field.type.toString()} not found`);
-      }
-
-      const name = field.name;
-      if (data[name] === undefined) {
-        throw new Error(`Field ${name} is missing from packet data`);
-      }
-      type.write(packetBuffer, data[name]);
-    }
+    packet.schema.write(packetBuffer, data);
 
     // adding the length to the packet
     const packetWithLength = new CustomBuffer();
