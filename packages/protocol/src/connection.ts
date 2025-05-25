@@ -1,3 +1,4 @@
+import { createCipheriv, createDecipheriv } from "node:crypto";
 import EventEmitter from "node:events";
 import type { Socket } from "node:net";
 
@@ -15,6 +16,9 @@ export class Connection<
     P[Bound extends "clientbound" ? "__clientPackets" : "__serverPackets"][K],
   ];
 }> {
+  private cipher: ReturnType<typeof createCipheriv> | undefined;
+  private decipher: ReturnType<typeof createDecipheriv> | undefined;
+
   constructor(
     public state: ConnectionState,
     public socket: Socket,
@@ -23,6 +27,9 @@ export class Connection<
 
     socket.on("data", async (buffer) => {
       console.log("Data received from client:", buffer);
+      if (this.decipher) {
+        buffer = this.decipher?.update(buffer);
+      }
       const customBuffer = new CustomBuffer(buffer);
       while (customBuffer.bytesAvailable > 0) {
         const packet = await parse(state, customBuffer);
@@ -33,7 +40,7 @@ export class Connection<
     });
   }
 
-  send<
+  async send<
     N extends keyof P[Bound extends "clientbound"
       ? "__serverPackets"
       : "__clientPackets"],
@@ -44,8 +51,8 @@ export class Connection<
       : "__clientPackets"][N] extends { data: infer D }
       ? D
       : unknown,
-  ): void;
-  send(name: string, data: any) {
+  ): Promise<void>;
+  async send(name: string, data: any) {
     console.log("Sending packet:", name, data);
     const packetName = name.split(":")[1];
     // TODO: pre-computed a map of packet names to ids
@@ -71,7 +78,7 @@ export class Connection<
     // serializing
     const packetBuffer = new CustomBuffer();
     packetBuffer.writeVarInt(packet.id);
-    packet.schema.write(packetBuffer, data);
+    await packet.schema.write(packetBuffer, data);
 
     // adding the length to the packet
     const packetWithLength = new CustomBuffer();
@@ -79,16 +86,37 @@ export class Connection<
     packetWithLength.writeBytes(packetBuffer);
 
     // sending the packet
-    this.socket.write(packetWithLength.buffer);
+    if (this.cipher) {
+      const encrypted = this.cipher.update(packetWithLength.buffer);
+      this.socket.write(encrypted);
+    } else {
+      this.socket.write(packetWithLength.buffer);
+    }
 
     // try parsing the packet to see if it works
-    // const parsedPacket = parse(
+    // packetWithLength.position = 0; // Reset position for parsing
+    // const parsedPacket = await parse(
     //   {
-    //     ...state,
-    //     bound: state.bound === "clientbound" ? "serverbound" : "clientbound",
+    //     ...this.state,
+    //     bound:
+    //       this.state.bound === "clientbound" ? "serverbound" : "clientbound",
     //   },
     //   packetWithLength,
     // );
-    // console.log("Sent packet parsed:", parsedPacket);
+    // if (!parsedPacket || parsedPacket.name !== name) {
+    //   throw new Error(`Failed to parse sent packet '${packet.name}'`);
+    // }
+    // console.log(`Sent packet '${packet.name}' is valid!`);
+  }
+
+  setSharedSecret(sharedSecret: Buffer) {
+    console.log("Enabling encryption");
+    // AES-128-CFB8: key is 16 bytes, IV is the same as the key
+    this.cipher = createCipheriv("aes-128-cfb8", sharedSecret, sharedSecret);
+    this.decipher = createDecipheriv(
+      "aes-128-cfb8",
+      sharedSecret,
+      sharedSecret,
+    );
   }
 }

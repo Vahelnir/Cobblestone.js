@@ -34,24 +34,14 @@ export class CustomBuffer {
     return this.readByte() !== 0;
   }
 
-  readBytes(bytes: CustomBuffer, offset = 0, length = 0) {
-    if (length === 0) {
-      length = this.bytesAvailable;
+  readBytes(size?: number): Buffer {
+    if (size === undefined) {
+      size = this.bytesAvailable;
     }
 
-    if (length > this.bytesAvailable) {
-      throw new RangeError("End of buffer was encountered.");
-    }
-
-    if (bytes.length < offset + length) {
-      bytes.expand(offset + length);
-    }
-
-    for (let i = 0; i < length; i++) {
-      bytes.buffer[i + offset] = this.buffer[i + this.cursor];
-    }
-
-    this.cursor += length;
+    const bytes = this.buffer.subarray(this.cursor, this.cursor + size);
+    this.cursor += size;
+    return bytes;
   }
 
   readBuffer(size: number): Buffer {

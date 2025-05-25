@@ -40,7 +40,7 @@ export function createClient(
 export function parse<P extends Protocol>(
   connectionState: ConnectionState<P>,
   buffer: Buffer | CustomBuffer,
-): any;
+): Promise<any>;
 export async function parse(
   state: ConnectionState<Protocol>,
   buffer: Buffer | CustomBuffer,

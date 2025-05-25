@@ -1,6 +1,6 @@
 import type { ProtocolType } from "./protocol.js";
 
-type ProtocolTypeFactory<T, O = void> = (options?: O) => ProtocolType<T>;
+type ProtocolTypeFactory<T, O = void> = (options: O) => ProtocolType<T>;
 
 export function defineProtocolType<T, O = void>(
   factoryOrType: ((options: O) => ProtocolType<T>) | ProtocolType<T>,

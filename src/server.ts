@@ -1,12 +1,36 @@
+import { constants, generateKeyPairSync, randomBytes } from "node:crypto";
 import { createServer, Socket } from "node:net";
-import { createClient } from "@cobblestonejs/protocol";
-import protocol770 from "@cobblestonejs/protocol/770";
+import NodeRSA from "node-rsa";
+
+import { Client } from "./client.js";
 
 export class Server {
   public server: ReturnType<typeof createServer>;
 
+  // TODO: make these private and provide safe access methods
+  public keys: { private: string; public: Buffer };
+  public nodeRsa: NodeRSA;
+
   constructor() {
     console.log("Server started");
+    const { publicKey, privateKey } = generateKeyPairSync("rsa", {
+      modulusLength: 1024,
+      publicKeyEncoding: { type: "spki", format: "der" },
+      privateKeyEncoding: { type: "pkcs1", format: "pem" },
+    });
+    this.keys = {
+      public: publicKey,
+      private: privateKey,
+    };
+    // NOTE: only because minecraft needs RSA_PKCS1_PADDING and node:crypto doesn't support this anymore
+    this.nodeRsa = new NodeRSA(this.keys.private, "pkcs1-private-pem", {
+      encryptionScheme: {
+        scheme: "pkcs1",
+        padding: constants.RSA_PKCS1_PADDING,
+      },
+      environment: "browser",
+    });
+
     this.server = createServer();
     this.server.on("connection", (socket) => {
       this.onConnection(socket);
@@ -19,31 +43,6 @@ export class Server {
 
   private onConnection(socket: Socket) {
     console.log("New client connected");
-    const client = createClient("serverbound", socket, protocol770);
-    client.on("status:status_request", () => {
-      console.log("Received status request");
-      client.send("status:status_response", {
-        jsonResponse: {
-          version: {
-            name: "1.21.5",
-            protocol: 770,
-          },
-          players: {
-            max: 100,
-            online: 0,
-          },
-          description: {
-            text: "Hello Rising!",
-          },
-        },
-      });
-    });
-
-    client.on("status:ping_request", (packet) => {
-      // TODO: debug why the timestamp received is not a valid timestamp
-      client.send("status:pong_response", {
-        timestamp: packet.data.timestamp,
-      });
-    });
+    const client = new Client(this, socket);
   }
 }
