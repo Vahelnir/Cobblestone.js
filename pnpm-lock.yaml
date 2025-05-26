@@ -43,7 +43,18 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
 
-  packages/protocol: {}
+  packages/buffer: {}
+
+  packages/nbt: {}
+
+  packages/protocol:
+    dependencies:
+      '@cobblestonejs/buffer':
+        specifier: workspace:*
+        version: link:../buffer
+      '@cobblestonejs/nbt':
+        specifier: workspace:*
+        version: link:../nbt
 
   packages/type-generator:
     dependencies:
