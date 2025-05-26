@@ -10,7 +10,7 @@
     }
   },
   "scripts": {
-    "test": "tsx test/index.ts"
+    "test": "tsx --test"
   },
   "dependencies": {
     "@cobblestonejs/buffer": "workspace:*"

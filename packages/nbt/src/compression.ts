@@ -1,4 +1,4 @@
-export function isGZIP(buffer: Buffer) {
+export function isGzip(buffer: Buffer) {
   return buffer.readInt16BE(0) === 0x1f8b;
 }
 

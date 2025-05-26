@@ -296,10 +296,10 @@ export function writeTag(
   }
 
   const typeId = getTypeId(tag.type);
-  const out: Buffer[] = [];
-  out.push(Buffer.from([typeId]));
+  const bufferParts: Buffer[] = [];
+  bufferParts.push(Buffer.from([typeId]));
   if (!nameless) {
-    out.push(writeString(tag.name ?? ""));
+    bufferParts.push(writeString(tag.name ?? ""));
   }
 
   const type = TYPES[typeId];
@@ -307,8 +307,8 @@ export function writeTag(
   if (type.type !== tag.type)
     throw new Error(`Type mismatch: expected ${type.type}, got ${tag.type}`);
 
-  out.push(type.write(tag));
-  return Buffer.concat(out);
+  bufferParts.push(type.write(tag));
+  return Buffer.concat(bufferParts);
 }
 
 export function parse(
