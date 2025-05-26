@@ -288,17 +288,21 @@ function readString(state: ParsingState): string {
   return name;
 }
 
-export function writeTag(tag: NBTTag, nameless = false): Buffer {
+export function writeTag(
+  tag: NBTTag,
+  { nameless = false }: { nameless?: boolean; network?: boolean } = {},
+): Buffer {
   if (tag.type === "end") {
     return Buffer.from([0]);
   }
 
   const typeId = getTypeId(tag.type);
   const out: Buffer[] = [];
+  out.push(Buffer.from([typeId]));
   if (!nameless) {
-    out.push(Buffer.from([typeId]));
-    out.push(writeString((tag as any).name ?? ""));
+    out.push(writeString(tag.name ?? ""));
   }
+  console.log("out", out, typeId, tag.type);
   const type = TYPES[typeId];
   if (!type) throw new Error(`No writer for type id ${typeId}`);
   if (type.type !== tag.type)

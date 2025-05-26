@@ -15,7 +15,7 @@ const server = await readFile(resolve("./test/servers.dat"));
 const level = await readFile(resolve("./test/level.dat"));
 
 const originalBuffer = bigtest;
-const tags = await parseNBT(originalBuffer);
+const { tags } = await parseNBT(originalBuffer);
 console.log("Parsed NBT data successfully.");
 console.log("Serializing parsed data...");
 const serialized = await serializeNBT(tags);

@@ -1,7 +1,10 @@
 import { parse, writeTag } from "./parsing.js";
-import { type NBTTag } from "./tags.js";
+import { type NBTCompoundTag, type NBTTag } from "./tags.js";
 
-export async function parseNBT(buffer: Buffer): Promise<NBTTag> {
+export async function parseNBT(
+  buffer: Buffer,
+  options: { network: boolean } = { network: false },
+): Promise<{ tags: NBTTag; endCursor: number }> {
   const header = buffer.readInt16BE(0);
   if (header === 0x1f8b) {
     // uncompress nbt using DecompressionStream
@@ -18,14 +21,25 @@ export async function parseNBT(buffer: Buffer): Promise<NBTTag> {
     buffer = Buffer.from(decompressed);
   }
 
-  return parse({
+  const state = {
     buffer,
     cursor: 0,
-  });
+  };
+
+  return {
+    tags: parse(state, { nameless: options.network }),
+    endCursor: state.cursor,
+  };
 }
 
-export function serializeNBT(tag: NBTTag): Buffer {
-  return writeTag(tag);
+export function serializeNBT(
+  tag: NBTCompoundTag,
+  options: { network: boolean } = { network: false },
+): Buffer {
+  console.log("Serializing NBT tag", tag.type);
+  return writeTag(tag, {
+    nameless: options.network,
+  });
 }
 
 export * from "./tags.js";

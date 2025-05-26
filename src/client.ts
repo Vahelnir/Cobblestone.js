@@ -110,21 +110,20 @@ export class Client {
               type: "compound",
               name: "",
               value: [
-                { type: "int", name: "fixed_time", value: 0 },
                 { type: "byte", name: "has_skylight", value: 1 },
                 { type: "byte", name: "has_ceiling", value: 0 },
                 { type: "byte", name: "ultrawarm", value: 0 },
                 { type: "byte", name: "natural", value: 1 },
-                { type: "double", name: "coordinate_scale", value: 0 },
+                { type: "double", name: "coordinate_scale", value: 1 },
                 { type: "byte", name: "bed_works", value: 1 },
-                { type: "byte", name: "respawn_anchor_works", value: 1 },
+                { type: "byte", name: "respawn_anchor_works", value: 0 },
                 { type: "int", name: "min_y", value: -64 },
                 { type: "int", name: "height", value: 384 },
                 { type: "int", name: "logical_height", value: 384 },
                 {
                   type: "string",
                   name: "infiniburn",
-                  value: "minecraft:infiniburn_overworld",
+                  value: "#minecraft:infiniburn_overworld",
                 },
                 {
                   type: "string",
@@ -132,9 +131,21 @@ export class Client {
                   value: "minecraft:overworld",
                 },
                 { type: "float", name: "ambient_light", value: 0 },
-                { type: "byte", name: "piglin_safe", value: 1 },
+                { type: "byte", name: "piglin_safe", value: 0 },
                 { type: "byte", name: "has_raids", value: 1 },
-                { type: "int", name: "monster_spawn_light_level", value: 0 },
+                {
+                  type: "compound",
+                  name: "monster_spawn_light_level",
+                  value: [
+                    {
+                      type: "string",
+                      name: "type",
+                      value: "minecraft:uniform",
+                    },
+                    { type: "int", name: "min_inclusive", value: 0 },
+                    { type: "int", name: "max_inclusive", value: 7 },
+                  ],
+                },
                 {
                   type: "int",
                   name: "monster_spawn_block_light_limit",
