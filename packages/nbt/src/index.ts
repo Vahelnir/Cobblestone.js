@@ -1,4 +1,5 @@
-import { parse, writeTag, type NBTTag } from "./tags.js";
+import { parse, writeTag } from "./parsing.js";
+import { type NBTTag } from "./tags.js";
 
 export async function parseNBT(buffer: Buffer): Promise<NBTTag> {
   const header = buffer.readInt16BE(0);
@@ -27,4 +28,5 @@ export function serializeNBT(tag: NBTTag): Buffer {
   return writeTag(tag);
 }
 
+export * from "./tags.js";
 export * from "./compression.js";

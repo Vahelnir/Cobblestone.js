@@ -1,4 +1,5 @@
-import type { CustomBuffer } from "../custom-buffer.js";
+import type { CustomBuffer } from "@cobblestonejs/buffer";
+
 import type { ConnectionState } from "../index.js";
 
 export type Protocol<
@@ -14,6 +15,7 @@ export type Protocol<
 export type TypegenType = {
   type: string;
   declarations?: string[];
+  imports?: string[];
 };
 
 export interface ProtocolType<T> {

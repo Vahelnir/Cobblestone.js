@@ -109,80 +109,38 @@ export class Client {
             data: {
               type: "compound",
               name: "",
-              value: {
-                fixed_time: {
-                  type: "int",
-                  value: 0,
-                },
-                has_skylight: {
-                  type: "byte",
-                  value: 1,
-                },
-                has_ceiling: {
-                  type: "byte",
-                  value: 0,
-                },
-                ultrawarm: {
-                  type: "byte",
-                  value: 0,
-                },
-                natural: {
-                  type: "byte",
-                  value: 1,
-                },
-                coordinate_scale: {
-                  type: "double",
-                  value: 0,
-                },
-                bed_works: {
-                  type: "byte",
-                  value: 1,
-                },
-                respawn_anchor_works: {
-                  type: "byte",
-                  value: 1,
-                },
-                min_y: {
-                  type: "int",
-                  value: -64,
-                },
-                height: {
-                  type: "int",
-                  value: 384,
-                },
-                logical_height: {
-                  type: "int",
-                  value: 384,
-                },
-                infiniburn: {
+              value: [
+                { type: "int", name: "fixed_time", value: 0 },
+                { type: "byte", name: "has_skylight", value: 1 },
+                { type: "byte", name: "has_ceiling", value: 0 },
+                { type: "byte", name: "ultrawarm", value: 0 },
+                { type: "byte", name: "natural", value: 1 },
+                { type: "double", name: "coordinate_scale", value: 0 },
+                { type: "byte", name: "bed_works", value: 1 },
+                { type: "byte", name: "respawn_anchor_works", value: 1 },
+                { type: "int", name: "min_y", value: -64 },
+                { type: "int", name: "height", value: 384 },
+                { type: "int", name: "logical_height", value: 384 },
+                {
                   type: "string",
+                  name: "infiniburn",
                   value: "minecraft:infiniburn_overworld",
                 },
-                effects: {
+                {
                   type: "string",
+                  name: "effects",
                   value: "minecraft:overworld",
                 },
-                ambient_light: {
-                  type: "float",
-                  value: 0,
-                },
-                piglin_safe: {
-                  type: "byte",
-                  value: 1,
-                },
-                has_raids: {
-                  type: "byte",
-                  value: 1,
-                },
-                monster_spawn_light_level: {
+                { type: "float", name: "ambient_light", value: 0 },
+                { type: "byte", name: "piglin_safe", value: 1 },
+                { type: "byte", name: "has_raids", value: 1 },
+                { type: "int", name: "monster_spawn_light_level", value: 0 },
+                {
                   type: "int",
+                  name: "monster_spawn_block_light_limit",
                   value: 0,
                 },
-                monster_spawn_block_light_limit: {
-                  type: "int",
-                  value: 0,
-                },
-              },
+              ],
             },
           },
         ],

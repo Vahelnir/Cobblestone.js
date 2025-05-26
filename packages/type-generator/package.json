@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "cli": "tsx ./src/index.ts"
+    "cli": "tsx --conditions=development ./src/index.ts"
   },
   "keywords": [],
   "author": "Vahelnir",

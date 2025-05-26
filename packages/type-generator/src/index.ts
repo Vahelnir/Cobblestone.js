@@ -27,6 +27,7 @@ program
       serverbound: [] as { id: number; name: string; data: string }[],
     };
 
+    const imports = new Set<string>();
     const typeDeclarations = new Set<string>();
 
     for (const state of Object.values(protocol.states)) {
@@ -46,6 +47,7 @@ program
           typegen?.declarations?.forEach((declaration) =>
             typeDeclarations.add(declaration),
           );
+          typegen?.imports?.forEach((importStr) => imports.add(importStr));
 
           packets[bound].push({
             id: packet.id,
@@ -69,7 +71,9 @@ program
     console.log(`Protocol file path: ${protocolFilePath}`);
 
     const content = await format(
-      `${Array.from(typeDeclarations).join("\n")}
+      `${Array.from(imports).join("\n")}
+
+       ${Array.from(typeDeclarations).join("\n")}
         
        export type ClientPacketMap = { ${clientPackets} }
        export type ClientPackets = ClientPacketMap[keyof ClientPacketMap];

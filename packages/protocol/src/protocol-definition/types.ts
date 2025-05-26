@@ -1,4 +1,3 @@
-import { CustomBuffer } from "../custom-buffer.js";
 import { defineProtocolType } from "./protocol-type.js";
 import type { ProtocolType } from "./protocol.js";
 
@@ -130,10 +129,10 @@ export const optional = defineProtocolType<
     const rawTypegen = type.typegen?.();
     const typegen =
       rawTypegen instanceof Promise ? await rawTypegen : rawTypegen;
-
     return {
       type: `(${typegen?.type ?? "unknown"}) | undefined`,
       declarations: typegen?.declarations ?? [],
+      imports: typegen?.imports ?? [],
     };
   },
 }));
@@ -144,6 +143,7 @@ export const prefixedArray = defineProtocolType<
 >(({ type }) => ({
   read: async (buffer) => {
     const size = buffer.readVarInt();
+    console.log("Reading array of length", size);
 
     const data: unknown[] = [];
     for (let i = 0; i < size; i++) {
@@ -154,6 +154,7 @@ export const prefixedArray = defineProtocolType<
   },
   write: async (buffer, value) => {
     buffer.writeVarInt(value.length);
+    console.log("Writing array of length", value.length);
     for (const item of value) {
       await type.write(buffer, item);
     }
@@ -166,6 +167,7 @@ export const prefixedArray = defineProtocolType<
     return {
       type: `(${typegen?.type ?? "unknown"})[]`,
       declarations: typegen?.declarations ?? [],
+      imports: typegen?.imports ?? [],
     };
   },
 }));
@@ -191,6 +193,7 @@ export const object = defineProtocolType<
     typegen: async () => {
       const properties: string[] = [];
       const declarations = new Set<string>();
+      const imports: string[] = [];
       for (const [key, protocolType] of Object.entries(obj)) {
         const rawTypegen = protocolType.typegen?.();
         const typegen =
@@ -201,6 +204,9 @@ export const object = defineProtocolType<
             declarations.add(declaration),
           );
         }
+        if (typegen?.imports) {
+          imports.push(...typegen.imports);
+        }
 
         properties.push(`${key}: ${type}`);
       }
@@ -208,6 +214,7 @@ export const object = defineProtocolType<
       return {
         type: `{ ${properties} }`,
         declarations: [...declarations],
+        imports,
       };
     },
   };

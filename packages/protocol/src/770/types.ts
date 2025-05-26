@@ -1,8 +1,9 @@
+import { type NBTTag } from "@cobblestonejs/nbt";
+
 type JSONTextComponent = string;
 type UUID = string;
 type Identifier = string;
 type ByteArray = Buffer;
-type NBT = any;
 type Position = { x: number; y: number; z: number };
 
 export type ClientPacketMap = {
@@ -71,7 +72,7 @@ export type ClientPacketMap = {
     name: "configuration:registry_data";
     data: {
       registryId: Identifier;
-      entries: { id: Identifier; data: NBT | undefined }[];
+      entries: { id: Identifier; data: NBTTag | undefined }[];
     };
   };
   "play:login": {
