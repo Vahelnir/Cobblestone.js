@@ -1,8 +1,8 @@
 import { createCipheriv, createDecipheriv } from "node:crypto";
 import EventEmitter from "node:events";
 import type { Socket } from "node:net";
+import { CustomBuffer } from "@cobblestonejs/buffer";
 
-import { CustomBuffer } from "./custom-buffer.js";
 import { parse, type ConnectionState } from "./index.js";
 import type { Protocol } from "./protocol-definition/protocol.js";
 
@@ -94,19 +94,23 @@ export class Connection<
     }
 
     // try parsing the packet to see if it works
-    // packetWithLength.position = 0; // Reset position for parsing
-    // const parsedPacket = await parse(
-    //   {
-    //     ...this.state,
-    //     bound:
-    //       this.state.bound === "clientbound" ? "serverbound" : "clientbound",
-    //   },
-    //   packetWithLength,
-    // );
-    // if (!parsedPacket || parsedPacket.name !== name) {
-    //   throw new Error(`Failed to parse sent packet '${packet.name}'`);
-    // }
-    // console.log(`Sent packet '${packet.name}' is valid!`);
+    packetWithLength.position = 0; // Reset position for parsing
+    const parsedPacket = await parse(
+      {
+        ...this.state,
+        bound:
+          this.state.bound === "clientbound" ? "serverbound" : "clientbound",
+      },
+      packetWithLength,
+    );
+    if (!parsedPacket) {
+      throw new Error(`Failed to parse sent packet '${packet.name}'`);
+    }
+
+    console.log(
+      `Sent packet '${packet.name}' is valid!`,
+      deepEqual(parsedPacket.data, data),
+    );
   }
 
   setSharedSecret(sharedSecret: Buffer) {
@@ -119,4 +123,24 @@ export class Connection<
       sharedSecret,
     );
   }
+}
+
+function deepEqual(a: any, b: any): boolean {
+  if (a === b) return true;
+  if (typeof a !== typeof b) return false;
+  if (typeof a !== "object" || a === null || b === null) return false;
+  if (Array.isArray(a)) {
+    if (!Array.isArray(b) || a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+      if (!deepEqual(a[i], b[i])) return false;
+    }
+    return true;
+  }
+  const aKeys = Object.keys(a);
+  const bKeys = Object.keys(b);
+  if (aKeys.length !== bKeys.length) return false;
+  for (const key of aKeys) {
+    if (!deepEqual(a[key], b[key])) return false;
+  }
+  return true;
 }

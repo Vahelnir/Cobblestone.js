@@ -32,7 +32,7 @@ export class Client {
             online: 0,
           },
           description: {
-            text: "Hello Baptiste !",
+            text: "Hello Rising!",
           },
         },
       });
@@ -97,6 +97,124 @@ export class Client {
         });
         this.disconnect();
       }
+    });
+
+    this.protocolClient.on("configuration:client_information", async () => {
+      // Send minimal registry data with only the overworld dimension type
+      await this.protocolClient.send("configuration:registry_data", {
+        registryId: "minecraft:dimension_type",
+        entries: [
+          {
+            id: "minecraft:overworld",
+            data: {
+              type: "compound",
+              name: "",
+              value: {
+                fixed_time: {
+                  type: "int",
+                  value: 0,
+                },
+                has_skylight: {
+                  type: "byte",
+                  value: 1,
+                },
+                has_ceiling: {
+                  type: "byte",
+                  value: 0,
+                },
+                ultrawarm: {
+                  type: "byte",
+                  value: 0,
+                },
+                natural: {
+                  type: "byte",
+                  value: 1,
+                },
+                coordinate_scale: {
+                  type: "double",
+                  value: 0,
+                },
+                bed_works: {
+                  type: "byte",
+                  value: 1,
+                },
+                respawn_anchor_works: {
+                  type: "byte",
+                  value: 1,
+                },
+                min_y: {
+                  type: "int",
+                  value: -64,
+                },
+                height: {
+                  type: "int",
+                  value: 384,
+                },
+                logical_height: {
+                  type: "int",
+                  value: 384,
+                },
+                infiniburn: {
+                  type: "string",
+                  value: "minecraft:infiniburn_overworld",
+                },
+                effects: {
+                  type: "string",
+                  value: "minecraft:overworld",
+                },
+                ambient_light: {
+                  type: "float",
+                  value: 0,
+                },
+                piglin_safe: {
+                  type: "byte",
+                  value: 1,
+                },
+                has_raids: {
+                  type: "byte",
+                  value: 1,
+                },
+                monster_spawn_light_level: {
+                  type: "int",
+                  value: 0,
+                },
+                monster_spawn_block_light_limit: {
+                  type: "int",
+                  value: 0,
+                },
+              },
+            },
+          },
+        ],
+      });
+      await this.protocolClient.send("configuration:finish_configuration", {});
+    });
+
+    this.protocolClient.on("configuration:finish_configuration", async () => {
+      await this.protocolClient.send("play:login", {
+        entityId: 0,
+        isHardcore: false,
+        dimensionNames: ["minecraft:overworld"],
+        gameMode: 0,
+        maxPlayers: 100,
+        viewDistance: 10,
+        simulationDistance: 10,
+        reducedDebugInfo: false,
+        enableRespawnScreen: true,
+        doLimitedCrafting: false,
+        dimensionType: 0,
+        dimensionName: "minecraft:overworld",
+        hashedSeed: BigInt(0),
+        previousGameMode: 0,
+        isDebug: false,
+        isFlat: false,
+        hasDeathLocation: false,
+        deathDimensionName: undefined,
+        deathLocation: undefined,
+        portalCooldown: 0,
+        seaLevel: 63,
+        enforcesSecureChat: false,
+      });
     });
   }
 

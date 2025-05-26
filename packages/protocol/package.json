@@ -20,6 +20,10 @@
     }
   },
   "scripts": {},
+  "dependencies": {
+    "@cobblestonejs/buffer": "workspace:*",
+    "@cobblestonejs/nbt": "workspace:*"
+  },
   "keywords": [],
   "author": "Vahelnir",
   "license": "MIT"

@@ -43,14 +43,6 @@ export const ubyte = defineProtocolType<number>(() => ({
   }),
 }));
 
-export const boolean = defineProtocolType<boolean>(() => ({
-  write: async (buffer, value) => buffer.writeBoolean(value),
-  read: async (buffer) => buffer.readBoolean(),
-  typegen: () => ({
-    type: "boolean",
-  }),
-}));
-
 export const short = defineProtocolType<number>(() => ({
   write: async (buffer, value) => buffer.writeShort(value),
   read: async (buffer) => buffer.readShort(),
@@ -67,11 +59,27 @@ export const ushort = defineProtocolType<number>(() => ({
   }),
 }));
 
+export const int = defineProtocolType<number>(() => ({
+  write: async (buffer, value) => buffer.writeInt(value),
+  read: async (buffer) => buffer.readInt(),
+  typegen: () => ({
+    type: "number",
+  }),
+}));
+
 export const long = defineProtocolType<bigint>(() => ({
   write: async (buffer, value) => buffer.writeLong(value),
   read: async (buffer) => buffer.readLong(),
   typegen: () => ({
     type: "bigint",
+  }),
+}));
+
+export const boolean = defineProtocolType<boolean>(() => ({
+  write: async (buffer, value) => buffer.writeBoolean(value),
+  read: async (buffer) => buffer.readBoolean(),
+  typegen: () => ({
+    type: "boolean",
   }),
 }));
 
@@ -132,26 +140,20 @@ export const optional = defineProtocolType<
 
 export const prefixedArray = defineProtocolType<
   unknown[],
-  { type: ProtocolType<unknown>; elementSize: number }
->(({ elementSize, type }) => ({
+  { type: ProtocolType<unknown> }
+>(({ type }) => ({
   read: async (buffer) => {
     const size = buffer.readVarInt();
-    if (size % elementSize !== 0) {
-      throw new Error(
-        `Invalid array size: ${size} is not a multiple of element size ${elementSize}`,
-      );
-    }
 
     const data: unknown[] = [];
-    for (let i = 0; i < size; i += elementSize) {
+    for (let i = 0; i < size; i++) {
       data.push(await type.read(buffer));
     }
 
     return data;
   },
   write: async (buffer, value) => {
-    buffer.writeVarInt(value.length * elementSize);
-
+    buffer.writeVarInt(value.length);
     for (const item of value) {
       await type.write(buffer, item);
     }
@@ -215,3 +217,5 @@ export * from "./types/json.js";
 export * from "./types/uuid.js";
 export * from "./types/jsonTextComponent.js";
 export * from "./types/identifier.js";
+export * from "./types/position.js";
+export * from "./types/nbt.js";

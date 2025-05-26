@@ -1,7 +1,7 @@
 import type { Socket } from "node:net";
+import { CustomBuffer } from "@cobblestonejs/buffer";
 
 import { Connection } from "./connection.js";
-import { CustomBuffer } from "./custom-buffer.js";
 import type { Protocol } from "./protocol-definition/protocol.js";
 
 export type Packet<D = any> = {
