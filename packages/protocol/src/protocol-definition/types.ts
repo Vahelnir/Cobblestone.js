@@ -143,8 +143,6 @@ export const prefixedArray = defineProtocolType<
 >(({ type }) => ({
   read: async (buffer) => {
     const size = buffer.readVarInt();
-    console.log("Reading array of length", size);
-
     const data: unknown[] = [];
     for (let i = 0; i < size; i++) {
       data.push(await type.read(buffer));
@@ -154,7 +152,6 @@ export const prefixedArray = defineProtocolType<
   },
   write: async (buffer, value) => {
     buffer.writeVarInt(value.length);
-    console.log("Writing array of length", value.length);
     for (const item of value) {
       await type.write(buffer, item);
     }

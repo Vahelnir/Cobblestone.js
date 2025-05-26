@@ -111,11 +111,6 @@ export class Connection<
       `Sent packet '${packet.name}' is valid!`,
       deepEqual(parsedPacket.data, data),
     );
-    console.log(
-      "length and remaining bytes",
-      packetWithLength.length,
-      packetWithLength.bytesAvailable,
-    );
   }
 
   setSharedSecret(sharedSecret: Buffer) {

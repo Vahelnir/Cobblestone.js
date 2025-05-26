@@ -5,8 +5,8 @@ import { resolve } from "node:path";
 import {
   compressGzip,
   parseNBT,
-  serializeNBT,
   uncompressGzip,
+  writeNBT,
 } from "../src/index.js";
 
 const helloWorld = await readFile(resolve("./test/hello_world.nbt"));
@@ -18,7 +18,7 @@ const originalBuffer = bigtest;
 const { tags } = await parseNBT(originalBuffer);
 console.log("Parsed NBT data successfully.");
 console.log("Serializing parsed data...");
-const serialized = await serializeNBT(tags);
+const serialized = await writeNBT(tags);
 const serializedCompressed = await compressGzip(serialized);
 
 const finalTags = await parseNBT(serializedCompressed);

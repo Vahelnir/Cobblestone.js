@@ -32,11 +32,10 @@ export async function parseNBT(
   };
 }
 
-export function serializeNBT(
-  tag: NBTCompoundTag,
+export function writeNBT(
+  tag: NBTTag,
   options: { network: boolean } = { network: false },
 ): Buffer {
-  console.log("Serializing NBT tag", tag.type);
   return writeTag(tag, {
     nameless: options.network,
   });

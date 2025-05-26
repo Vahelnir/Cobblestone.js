@@ -198,7 +198,6 @@ const TYPES: Partial<
     write(tag: NBTCompoundTag) {
       const compoundTag = tag;
       const out: Buffer[] = [];
-      console.log(compoundTag);
       for (const child of compoundTag.value) {
         out.push(writeTag(child));
       }
@@ -302,7 +301,7 @@ export function writeTag(
   if (!nameless) {
     out.push(writeString(tag.name ?? ""));
   }
-  console.log("out", out, typeId, tag.type);
+
   const type = TYPES[typeId];
   if (!type) throw new Error(`No writer for type id ${typeId}`);
   if (type.type !== tag.type)
