@@ -95,9 +95,9 @@ export type ClientPacketMap = {
       previousGameMode: number;
       isDebug: boolean;
       isFlat: boolean;
-      hasDeathLocation: boolean;
-      deathDimensionName: Identifier | undefined;
-      deathLocation: Position | undefined;
+      deathPosition:
+        | { dimensionName: Identifier; location: Position }
+        | undefined;
       portalCooldown: number;
       seaLevel: number;
       enforcesSecureChat: boolean;

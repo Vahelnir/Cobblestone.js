@@ -38,9 +38,9 @@ export const play = {
           previousGameMode: byte(),
           isDebug: boolean(),
           isFlat: boolean(),
-          hasDeathLocation: boolean(),
-          deathDimensionName: optional({ type: identifier() }),
-          deathLocation: optional({ type: position() }),
+          deathPosition: optional({
+            type: object({ dimensionName: identifier(), location: position() }),
+          }),
           portalCooldown: varint(),
           seaLevel: varint(),
           enforcesSecureChat: boolean(),
