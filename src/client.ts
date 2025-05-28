@@ -4,6 +4,17 @@ import { createClient } from "@cobblestonejs/protocol";
 import protocol770 from "@cobblestonejs/protocol/770";
 
 import type { Connection } from "../packages/protocol/src/connection.js";
+import cat_variant from "./minecraft-registries/cat_variant.js";
+import chicken_variant from "./minecraft-registries/chicken_variant.js";
+import cow_variant from "./minecraft-registries/cow_variant.js";
+import damage_type from "./minecraft-registries/damage_type.js";
+import dimension_type from "./minecraft-registries/dimension_type.js";
+import frog_variant from "./minecraft-registries/frog_variant.js";
+import painting_variant from "./minecraft-registries/painting_variant.js";
+import pig_variant from "./minecraft-registries/pig_variant.js";
+import wolf_sound_variant from "./minecraft-registries/wolf_sound_variant.js";
+import wolf_variant from "./minecraft-registries/wolf_variant.js";
+import worldgenBiome from "./minecraft-registries/worldgen.biome.js";
 import type { Server } from "./server.js";
 
 export class Client {
@@ -101,473 +112,560 @@ export class Client {
 
     this.protocolClient.on("configuration:client_information", async () => {
       // Send minimal registry data with only the overworld dimension type
-      await this.protocolClient.send("configuration:registry_data", {
-        registryId: "minecraft:dimension_type",
-        entries: [
-          {
-            id: "minecraft:overworld",
-            data: {
-              type: "compound",
-              name: "",
-              value: [
-                { type: "byte", name: "has_skylight", value: 1 },
-                { type: "byte", name: "has_ceiling", value: 0 },
-                { type: "byte", name: "ultrawarm", value: 0 },
-                { type: "byte", name: "natural", value: 1 },
-                { type: "double", name: "coordinate_scale", value: 1 },
-                { type: "byte", name: "bed_works", value: 1 },
-                { type: "byte", name: "respawn_anchor_works", value: 0 },
-                { type: "int", name: "min_y", value: -64 },
-                { type: "int", name: "height", value: 384 },
-                { type: "int", name: "logical_height", value: 384 },
-                {
-                  type: "string",
-                  name: "infiniburn",
-                  value: "#minecraft:infiniburn_overworld",
-                },
-                {
-                  type: "string",
-                  name: "effects",
-                  value: "minecraft:overworld",
-                },
-                { type: "float", name: "ambient_light", value: 0 },
-                { type: "byte", name: "piglin_safe", value: 0 },
-                { type: "byte", name: "has_raids", value: 1 },
-                {
-                  type: "compound",
-                  name: "monster_spawn_light_level",
-                  value: [
-                    {
-                      type: "string",
-                      name: "type",
-                      value: "minecraft:uniform",
-                    },
-                    { type: "int", name: "min_inclusive", value: 0 },
-                    { type: "int", name: "max_inclusive", value: 7 },
-                  ],
-                },
-                {
-                  type: "int",
-                  name: "monster_spawn_block_light_limit",
-                  value: 0,
-                },
-              ],
-            },
-          },
-        ],
-      });
+      // await this.protocolClient.send("configuration:registry_data", {
+      //   registryId: "minecraft:dimension_type",
+      //   entries: [
+      //     {
+      //       id: "minecraft:overworld",
+      //       data: {
+      //         type: "compound",
+      //         name: "",
+      //         value: [
+      //           { type: "byte", name: "has_skylight", value: 1 },
+      //           { type: "byte", name: "has_ceiling", value: 0 },
+      //           { type: "byte", name: "ultrawarm", value: 0 },
+      //           { type: "byte", name: "natural", value: 1 },
+      //           { type: "double", name: "coordinate_scale", value: 1 },
+      //           { type: "byte", name: "bed_works", value: 1 },
+      //           { type: "byte", name: "respawn_anchor_works", value: 0 },
+      //           { type: "int", name: "min_y", value: -64 },
+      //           { type: "int", name: "height", value: 384 },
+      //           { type: "int", name: "logical_height", value: 384 },
+      //           {
+      //             type: "string",
+      //             name: "infiniburn",
+      //             value: "#minecraft:infiniburn_overworld",
+      //           },
+      //           {
+      //             type: "string",
+      //             name: "effects",
+      //             value: "minecraft:overworld",
+      //           },
+      //           { type: "float", name: "ambient_light", value: 0 },
+      //           { type: "byte", name: "piglin_safe", value: 0 },
+      //           { type: "byte", name: "has_raids", value: 1 },
+      //           {
+      //             type: "compound",
+      //             name: "monster_spawn_light_level",
+      //             value: [
+      //               {
+      //                 type: "string",
+      //                 name: "type",
+      //                 value: "minecraft:uniform",
+      //               },
+      //               { type: "int", name: "min_inclusive", value: 0 },
+      //               { type: "int", name: "max_inclusive", value: 7 },
+      //             ],
+      //           },
+      //           {
+      //             type: "int",
+      //             name: "monster_spawn_block_light_limit",
+      //             value: 0,
+      //           },
+      //         ],
+      //       },
+      //     },
+      //   ],
+      // });
+      // await this.protocolClient.send("configuration:registry_data", {
+      //   registryId: "minecraft:cat_variant",
+      //   entries: [
+      //     {
+      //       id: "minecraft:all_black",
+      //       data: {
+      //         type: "compound",
+      //         name: "",
+      //         value: [
+      //           {
+      //             type: "string",
+      //             name: "asset_id",
+      //             value: "minecraft:entity/cat/all_black",
+      //           },
+      //           {
+      //             type: "list",
+      //             name: "spawn_conditions",
+      //             value: [
+      //               {
+      //                 type: "compound",
+      //                 value: [
+      //                   {
+      //                     type: "compound",
+      //                     name: "condition",
+      //                     value: [
+      //                       {
+      //                         type: "string",
+      //                         name: "type",
+      //                         value: "minecraft:structure",
+      //                       },
+      //                       {
+      //                         type: "string",
+      //                         name: "structures",
+      //                         value: "#minecraft:cats_spawn_as_black",
+      //                       },
+      //                     ],
+      //                   },
+      //                   { type: "int", name: "priority", value: 1 },
+      //                 ],
+      //               }, // Explicitly cast  to satisfy NBTCompoundTag
+      //               {
+      //                 type: "compound",
+      //                 value: [
+      //                   {
+      //                     type: "compound",
+      //                     name: "condition",
+      //                     value: [
+      //                       {
+      //                         type: "string",
+      //                         name: "type",
+      //                         value: "minecraft:moon_brightness",
+      //                       },
+      //                       {
+      //                         type: "compound",
+      //                         name: "range",
+      //                         value: [
+      //                           { type: "float", name: "min", value: 0.9 },
+      //                         ],
+      //                       },
+      //                     ],
+      //                   },
+      //                   { type: "int", name: "priority", value: 0 },
+      //                 ],
+      //               },
+      //             ],
+      //           },
+      //         ],
+      //       },
+      //     },
+      //   ],
+      // });
+      // await this.protocolClient.send("configuration:registry_data", {
+      //   registryId: "minecraft:chicken_variant",
+      //   entries: [
+      //     {
+      //       id: "minecraft:cold",
+      //       data: {
+      //         type: "compound",
+      //         name: "",
+      //         value: [
+      //           {
+      //             type: "string",
+      //             name: "asset_id",
+      //             value: "minecraft:entity/chicken/cold_chicken",
+      //           },
+      //           { type: "string", name: "model", value: "cold" },
+      //           {
+      //             type: "list",
+      //             name: "spawn_conditions",
+      //             value: [
+      //               {
+      //                 type: "compound",
+      //                 value: [
+      //                   {
+      //                     type: "compound",
+      //                     name: "condition",
+      //                     value: [
+      //                       {
+      //                         type: "string",
+      //                         name: "type",
+      //                         value: "minecraft:biome",
+      //                       },
+      //                       {
+      //                         type: "string",
+      //                         name: "biomes",
+      //                         value:
+      //                           "#minecraft:spawns_cold_variant_farm_animals",
+      //                       },
+      //                     ],
+      //                   },
+      //                   { type: "int", name: "priority", value: 1 },
+      //                 ],
+      //               },
+      //             ],
+      //           },
+      //         ],
+      //       },
+      //     },
+      //   ],
+      // });
+      // await this.protocolClient.send("configuration:registry_data", {
+      //   registryId: "minecraft:cow_variant",
+      //   entries: [
+      //     {
+      //       id: "minecraft:cold",
+      //       data: {
+      //         type: "compound",
+      //         name: "",
+      //         value: [
+      //           {
+      //             type: "string",
+      //             name: "asset_id",
+      //             value: "minecraft:entity/cow/cold_cow",
+      //           },
+      //           { type: "string", name: "model", value: "cold" },
+      //           {
+      //             type: "list",
+      //             name: "spawn_conditions",
+      //             value: [
+      //               {
+      //                 type: "compound",
+      //                 value: [
+      //                   {
+      //                     type: "compound",
+      //                     name: "condition",
+      //                     value: [
+      //                       {
+      //                         type: "string",
+      //                         name: "type",
+      //                         value: "minecraft:biome",
+      //                       },
+      //                       {
+      //                         type: "string",
+      //                         name: "biomes",
+      //                         value:
+      //                           "#minecraft:spawns_cold_variant_farm_animals",
+      //                       },
+      //                     ],
+      //                   },
+      //                   { type: "int", name: "priority", value: 1 },
+      //                 ],
+      //               },
+      //             ],
+      //           },
+      //         ],
+      //       },
+      //     },
+      //   ],
+      // });
+      // await this.protocolClient.send("configuration:registry_data", {
+      //   registryId: "minecraft:frog_variant",
+      //   entries: [
+      //     {
+      //       id: "minecraft:cold",
+      //       data: {
+      //         type: "compound",
+      //         name: "",
+      //         value: [
+      //           {
+      //             type: "string",
+      //             name: "asset_id",
+      //             value: "minecraft:entity/frog/cold_frog",
+      //           },
+      //           {
+      //             type: "list",
+      //             name: "spawn_conditions",
+      //             value: [
+      //               {
+      //                 type: "compound",
+      //                 value: [
+      //                   {
+      //                     type: "compound",
+      //                     name: "condition",
+      //                     value: [
+      //                       {
+      //                         type: "string",
+      //                         name: "type",
+      //                         value: "minecraft:biome",
+      //                       },
+      //                       {
+      //                         type: "string",
+      //                         name: "biomes",
+      //                         value: "#minecraft:spawns_cold_variant_frogs",
+      //                       },
+      //                     ],
+      //                   },
+      //                   { type: "int", name: "priority", value: 1 },
+      //                 ],
+      //               },
+      //             ],
+      //           },
+      //         ],
+      //       },
+      //     },
+      //   ],
+      // });
+      // await this.protocolClient.send("configuration:registry_data", {
+      //   registryId: "minecraft:painting_variant",
+      //   entries: [
+      //     {
+      //       id: "minecraft:alban",
+      //       data: {
+      //         type: "compound",
+      //         name: "",
+      //         value: [
+      //           { type: "string", name: "asset_id", value: "minecraft:alban" },
+      //           {
+      //             type: "compound",
+      //             name: "author",
+      //             value: [
+      //               { type: "string", name: "color", value: "gray" },
+      //               {
+      //                 type: "string",
+      //                 name: "translate",
+      //                 value: "painting.minecraft.alban.author",
+      //               },
+      //             ],
+      //           },
+      //           { type: "int", name: "height", value: 1 },
+      //           {
+      //             type: "compound",
+      //             name: "title",
+      //             value: [
+      //               { type: "string", name: "color", value: "yellow" },
+      //               {
+      //                 type: "string",
+      //                 name: "translate",
+      //                 value: "painting.minecraft.alban.title",
+      //               },
+      //             ],
+      //           },
+      //           { type: "int", name: "width", value: 1 },
+      //         ],
+      //       },
+      //     },
+      //   ],
+      // });
+      // await this.protocolClient.send("configuration:registry_data", {
+      //   registryId: "minecraft:pig_variant",
+      //   entries: [
+      //     {
+      //       id: "minecraft:cold",
+      //       data: {
+      //         type: "compound",
+      //         name: "",
+      //         value: [
+      //           {
+      //             type: "string",
+      //             name: "asset_id",
+      //             value: "minecraft:entity/pig/cold_pig",
+      //           },
+      //           { type: "string", name: "model", value: "cold" },
+      //           {
+      //             type: "list",
+      //             name: "spawn_conditions",
+      //             value: [
+      //               {
+      //                 type: "compound",
+      //                 value: [
+      //                   {
+      //                     type: "compound",
+      //                     name: "condition",
+      //                     value: [
+      //                       {
+      //                         type: "string",
+      //                         name: "type",
+      //                         value: "minecraft:biome",
+      //                       },
+      //                       {
+      //                         type: "string",
+      //                         name: "biomes",
+      //                         value:
+      //                           "#minecraft:spawns_cold_variant_farm_animals",
+      //                       },
+      //                     ],
+      //                   },
+      //                   { type: "int", name: "priority", value: 1 },
+      //                 ],
+      //               },
+      //             ],
+      //           },
+      //         ],
+      //       },
+      //     },
+      //   ],
+      // });
+      // await this.protocolClient.send("configuration:registry_data", {
+      //   registryId: "minecraft:wolf_sound_variant",
+      //   entries: [
+      //     {
+      //       id: "minecraft:angry",
+      //       data: {
+      //         type: "compound",
+      //         name: "",
+      //         value: [
+      //           {
+      //             type: "string",
+      //             name: "ambient_sound",
+      //             value: "minecraft:entity.wolf_angry.ambient",
+      //           },
+      //           {
+      //             type: "string",
+      //             name: "death_sound",
+      //             value: "minecraft:entity.wolf_angry.death",
+      //           },
+      //           {
+      //             type: "string",
+      //             name: "growl_sound",
+      //             value: "minecraft:entity.wolf_angry.growl",
+      //           },
+      //           {
+      //             type: "string",
+      //             name: "hurt_sound",
+      //             value: "minecraft:entity.wolf_angry.hurt",
+      //           },
+      //           {
+      //             type: "string",
+      //             name: "pant_sound",
+      //             value: "minecraft:entity.wolf_angry.pant",
+      //           },
+      //           {
+      //             type: "string",
+      //             name: "whine_sound",
+      //             value: "minecraft:entity.wolf_angry.whine",
+      //           },
+      //         ],
+      //       },
+      //     },
+      //   ],
+      // });
+      // await this.protocolClient.send("configuration:registry_data", {
+      //   registryId: "minecraft:wolf_variant",
+      //   entries: [
+      //     {
+      //       id: "minecraft:ashen",
+      //       data: {
+      //         type: "compound",
+      //         name: "",
+      //         value: [
+      //           {
+      //             type: "compound",
+      //             name: "assets",
+      //             value: [
+      //               {
+      //                 type: "string",
+      //                 name: "angry",
+      //                 value: "minecraft:entity/wolf/wolf_ashen_angry",
+      //               },
+      //               {
+      //                 type: "string",
+      //                 name: "tame",
+      //                 value: "minecraft:entity/wolf/wolf_ashen_tame",
+      //               },
+      //               {
+      //                 type: "string",
+      //                 name: "wild",
+      //                 value: "minecraft:entity/wolf/wolf_ashen",
+      //               },
+      //             ],
+      //           },
+      //           {
+      //             type: "list",
+      //             name: "spawn_conditions",
+      //             value: [
+      //               {
+      //                 type: "compound",
+      //                 value: [
+      //                   {
+      //                     type: "compound",
+      //                     name: "condition",
+      //                     value: [
+      //                       {
+      //                         type: "string",
+      //                         name: "type",
+      //                         value: "minecraft:biome",
+      //                       },
+      //                       {
+      //                         type: "string",
+      //                         name: "biomes",
+      //                         value: "minecraft:snowy_taiga",
+      //                       },
+      //                     ],
+      //                   },
+      //                   { type: "int", name: "priority", value: 1 },
+      //                 ],
+      //               },
+      //             ],
+      //           },
+      //         ],
+      //       },
+      //     },
+      //   ],
+      // });
+
       await this.protocolClient.send("configuration:registry_data", {
         registryId: "minecraft:cat_variant",
-        entries: [
-          {
-            id: "minecraft:all_black",
-            data: {
-              type: "compound",
-              name: "",
-              value: [
-                {
-                  type: "string",
-                  name: "asset_id",
-                  value: "minecraft:entity/cat/all_black",
-                },
-                {
-                  type: "list",
-                  name: "spawn_conditions",
-                  value: [
-                    {
-                      type: "compound",
-                      value: [
-                        {
-                          type: "compound",
-                          name: "condition",
-                          value: [
-                            {
-                              type: "string",
-                              name: "type",
-                              value: "minecraft:structure",
-                            },
-                            {
-                              type: "string",
-                              name: "structures",
-                              value: "#minecraft:cats_spawn_as_black",
-                            },
-                          ],
-                        },
-                        { type: "int", name: "priority", value: 1 },
-                      ],
-                    }, // Explicitly cast  to satisfy NBTCompoundTag
-                    {
-                      type: "compound",
-                      value: [
-                        {
-                          type: "compound",
-                          name: "condition",
-                          value: [
-                            {
-                              type: "string",
-                              name: "type",
-                              value: "minecraft:moon_brightness",
-                            },
-                            {
-                              type: "compound",
-                              name: "range",
-                              value: [
-                                { type: "float", name: "min", value: 0.9 },
-                              ],
-                            },
-                          ],
-                        },
-                        { type: "int", name: "priority", value: 0 },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-          },
-        ],
+        entries: Object.entries(cat_variant).map(([id, data]) => ({
+          id: "minecraft:" + id,
+          data,
+        })),
       });
       await this.protocolClient.send("configuration:registry_data", {
         registryId: "minecraft:chicken_variant",
-        entries: [
-          {
-            id: "minecraft:cold",
-            data: {
-              type: "compound",
-              name: "",
-              value: [
-                {
-                  type: "string",
-                  name: "asset_id",
-                  value: "minecraft:entity/chicken/cold_chicken",
-                },
-                { type: "string", name: "model", value: "cold" },
-                {
-                  type: "list",
-                  name: "spawn_conditions",
-                  value: [
-                    {
-                      type: "compound",
-                      value: [
-                        {
-                          type: "compound",
-                          name: "condition",
-                          value: [
-                            {
-                              type: "string",
-                              name: "type",
-                              value: "minecraft:biome",
-                            },
-                            {
-                              type: "string",
-                              name: "biomes",
-                              value:
-                                "#minecraft:spawns_cold_variant_farm_animals",
-                            },
-                          ],
-                        },
-                        { type: "int", name: "priority", value: 1 },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-          },
-        ],
+        entries: Object.entries(chicken_variant).map(([id, data]) => ({
+          id: "minecraft:" + id,
+          data,
+        })),
       });
+
       await this.protocolClient.send("configuration:registry_data", {
         registryId: "minecraft:cow_variant",
-        entries: [
-          {
-            id: "minecraft:cold",
-            data: {
-              type: "compound",
-              name: "",
-              value: [
-                {
-                  type: "string",
-                  name: "asset_id",
-                  value: "minecraft:entity/cow/cold_cow",
-                },
-                { type: "string", name: "model", value: "cold" },
-                {
-                  type: "list",
-                  name: "spawn_conditions",
-                  value: [
-                    {
-                      type: "compound",
-                      value: [
-                        {
-                          type: "compound",
-                          name: "condition",
-                          value: [
-                            {
-                              type: "string",
-                              name: "type",
-                              value: "minecraft:biome",
-                            },
-                            {
-                              type: "string",
-                              name: "biomes",
-                              value:
-                                "#minecraft:spawns_cold_variant_farm_animals",
-                            },
-                          ],
-                        },
-                        { type: "int", name: "priority", value: 1 },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-          },
-        ],
+        entries: Object.entries(cow_variant).map(([id, data]) => ({
+          id: "minecraft:" + id,
+          data,
+        })),
       });
+
       await this.protocolClient.send("configuration:registry_data", {
         registryId: "minecraft:frog_variant",
-        entries: [
-          {
-            id: "minecraft:cold",
-            data: {
-              type: "compound",
-              name: "",
-              value: [
-                {
-                  type: "string",
-                  name: "asset_id",
-                  value: "minecraft:entity/frog/cold_frog",
-                },
-                {
-                  type: "list",
-                  name: "spawn_conditions",
-                  value: [
-                    {
-                      type: "compound",
-                      value: [
-                        {
-                          type: "compound",
-                          name: "condition",
-                          value: [
-                            {
-                              type: "string",
-                              name: "type",
-                              value: "minecraft:biome",
-                            },
-                            {
-                              type: "string",
-                              name: "biomes",
-                              value: "#minecraft:spawns_cold_variant_frogs",
-                            },
-                          ],
-                        },
-                        { type: "int", name: "priority", value: 1 },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-          },
-        ],
+        entries: Object.entries(frog_variant).map(([id, data]) => ({
+          id: "minecraft:" + id,
+          data,
+        })),
       });
-      await this.protocolClient.send("configuration:registry_data", {
-        registryId: "minecraft:painting_variant",
-        entries: [
-          {
-            id: "minecraft:alban",
-            data: {
-              type: "compound",
-              name: "",
-              value: [
-                { type: "string", name: "asset_id", value: "minecraft:alban" },
-                {
-                  type: "compound",
-                  name: "author",
-                  value: [
-                    { type: "string", name: "color", value: "gray" },
-                    {
-                      type: "string",
-                      name: "translate",
-                      value: "painting.minecraft.alban.author",
-                    },
-                  ],
-                },
-                { type: "int", name: "height", value: 1 },
-                {
-                  type: "compound",
-                  name: "title",
-                  value: [
-                    { type: "string", name: "color", value: "yellow" },
-                    {
-                      type: "string",
-                      name: "translate",
-                      value: "painting.minecraft.alban.title",
-                    },
-                  ],
-                },
-                { type: "int", name: "width", value: 1 },
-              ],
-            },
-          },
-        ],
-      });
+
       await this.protocolClient.send("configuration:registry_data", {
         registryId: "minecraft:pig_variant",
-        entries: [
-          {
-            id: "minecraft:cold",
-            data: {
-              type: "compound",
-              name: "",
-              value: [
-                {
-                  type: "string",
-                  name: "asset_id",
-                  value: "minecraft:entity/pig/cold_pig",
-                },
-                { type: "string", name: "model", value: "cold" },
-                {
-                  type: "list",
-                  name: "spawn_conditions",
-                  value: [
-                    {
-                      type: "compound",
-                      value: [
-                        {
-                          type: "compound",
-                          name: "condition",
-                          value: [
-                            {
-                              type: "string",
-                              name: "type",
-                              value: "minecraft:biome",
-                            },
-                            {
-                              type: "string",
-                              name: "biomes",
-                              value:
-                                "#minecraft:spawns_cold_variant_farm_animals",
-                            },
-                          ],
-                        },
-                        { type: "int", name: "priority", value: 1 },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-          },
-        ],
+        entries: Object.entries(pig_variant).map(([id, data]) => ({
+          id: "minecraft:" + id,
+          data,
+        })),
       });
+
       await this.protocolClient.send("configuration:registry_data", {
         registryId: "minecraft:wolf_sound_variant",
-        entries: [
-          {
-            id: "minecraft:angry",
-            data: {
-              type: "compound",
-              name: "",
-              value: [
-                {
-                  type: "string",
-                  name: "ambient_sound",
-                  value: "minecraft:entity.wolf_angry.ambient",
-                },
-                {
-                  type: "string",
-                  name: "death_sound",
-                  value: "minecraft:entity.wolf_angry.death",
-                },
-                {
-                  type: "string",
-                  name: "growl_sound",
-                  value: "minecraft:entity.wolf_angry.growl",
-                },
-                {
-                  type: "string",
-                  name: "hurt_sound",
-                  value: "minecraft:entity.wolf_angry.hurt",
-                },
-                {
-                  type: "string",
-                  name: "pant_sound",
-                  value: "minecraft:entity.wolf_angry.pant",
-                },
-                {
-                  type: "string",
-                  name: "whine_sound",
-                  value: "minecraft:entity.wolf_angry.whine",
-                },
-              ],
-            },
-          },
-        ],
+        entries: Object.entries(wolf_sound_variant).map(([id, data]) => ({
+          id: "minecraft:" + id,
+          data,
+        })),
       });
+
       await this.protocolClient.send("configuration:registry_data", {
         registryId: "minecraft:wolf_variant",
-        entries: [
-          {
-            id: "minecraft:ashen",
-            data: {
-              type: "compound",
-              name: "",
-              value: [
-                {
-                  type: "compound",
-                  name: "assets",
-                  value: [
-                    {
-                      type: "string",
-                      name: "angry",
-                      value: "minecraft:entity/wolf/wolf_ashen_angry",
-                    },
-                    {
-                      type: "string",
-                      name: "tame",
-                      value: "minecraft:entity/wolf/wolf_ashen_tame",
-                    },
-                    {
-                      type: "string",
-                      name: "wild",
-                      value: "minecraft:entity/wolf/wolf_ashen",
-                    },
-                  ],
-                },
-                {
-                  type: "list",
-                  name: "spawn_conditions",
-                  value: [
-                    {
-                      type: "compound",
-                      value: [
-                        {
-                          type: "compound",
-                          name: "condition",
-                          value: [
-                            {
-                              type: "string",
-                              name: "type",
-                              value: "minecraft:biome",
-                            },
-                            {
-                              type: "string",
-                              name: "biomes",
-                              value: "minecraft:snowy_taiga",
-                            },
-                          ],
-                        },
-                        { type: "int", name: "priority", value: 1 },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-          },
-        ],
+        entries: Object.entries(wolf_variant).map(([id, data]) => ({
+          id: "minecraft:" + id,
+          data,
+        })),
+      });
+
+      await this.protocolClient.send("configuration:registry_data", {
+        registryId: "minecraft:painting_variant",
+        entries: Object.entries(painting_variant).map(([id, data]) => ({
+          id: "minecraft:" + id,
+          data,
+        })),
+      });
+
+      await this.protocolClient.send("configuration:registry_data", {
+        registryId: "minecraft:dimension_type",
+        entries: Object.entries(dimension_type).map(([id, data]) => ({
+          id: "minecraft:" + id,
+          data,
+        })),
+      });
+
+      await this.protocolClient.send("configuration:registry_data", {
+        registryId: "minecraft:damage_type",
+        entries: Object.entries(damage_type).map(([id, data]) => ({
+          id: "minecraft:" + id,
+          data,
+        })),
+      });
+
+      await this.protocolClient.send("configuration:registry_data", {
+        registryId: "minecraft:worldgen/biome",
+        entries: Object.entries(worldgenBiome).map(([id, data]) => ({
+          id: "minecraft:" + id,
+          data,
+        })),
       });
 
       await this.protocolClient.send("configuration:finish_configuration", {});
@@ -591,7 +689,6 @@ export class Client {
         previousGameMode: 0,
         isDebug: false,
         isFlat: false,
-        hasDeathLocation: false,
         deathPosition: undefined,
         portalCooldown: 1,
         seaLevel: 63,

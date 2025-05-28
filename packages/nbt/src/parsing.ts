@@ -1,5 +1,4 @@
 import type {
-  NamelessNBTTag,
   NBTByteArrayTag,
   NBTByteTag,
   NBTCompoundTag,
@@ -153,7 +152,7 @@ const TYPES: Partial<
       const length = state.buffer.readInt32BE(state.cursor);
       state.cursor += 4;
 
-      const tags: NamelessNBTTag[] = [];
+      const tags: NBTTag[] = [];
       for (let i = 0; i < length; i++) {
         const tag = parse(state, {
           nameless: true,

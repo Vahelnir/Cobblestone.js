@@ -74,6 +74,22 @@ export const long = defineProtocolType<bigint>(() => ({
   }),
 }));
 
+export const float = defineProtocolType<number>(() => ({
+  write: async (buffer, value) => buffer.writeFloat(value),
+  read: async (buffer) => buffer.readFloat(),
+  typegen: () => ({
+    type: "number",
+  }),
+}));
+
+export const double = defineProtocolType<number>(() => ({
+  write: async (buffer, value) => buffer.writeDouble(value),
+  read: async (buffer) => buffer.readDouble(),
+  typegen: () => ({
+    type: "number",
+  }),
+}));
+
 export const boolean = defineProtocolType<boolean>(() => ({
   write: async (buffer, value) => buffer.writeBoolean(value),
   read: async (buffer) => buffer.readBoolean(),
@@ -177,6 +193,7 @@ export const object = defineProtocolType<
   return {
     write: async (buffer, value) => {
       for (const [key, type] of Object.entries(obj)) {
+        console.log(key, value);
         await type.write(buffer, value[key]);
       }
     },
