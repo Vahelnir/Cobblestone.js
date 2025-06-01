@@ -1,3 +1,5 @@
+import type { NBTCompoundTag } from "../../packages/nbt/src/tags.js";
+
 export default {
   cold: {
     type: "compound",
@@ -90,4 +92,4 @@ export default {
       },
     ],
   },
-};
+} as Record<string, NBTCompoundTag>;

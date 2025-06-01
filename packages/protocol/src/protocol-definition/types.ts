@@ -1,5 +1,7 @@
+import type { CustomBuffer } from "@cobblestonejs/buffer";
+
 import { defineProtocolType } from "./protocol-type.js";
-import type { ProtocolType } from "./protocol.js";
+import type { ProtocolType, TypegenType } from "./protocol.js";
 
 export const byteArray = defineProtocolType<Buffer, { length?: number }>(
   ({ length }) => ({
@@ -186,53 +188,66 @@ export const prefixedArray = defineProtocolType<
 }));
 
 // NOTE: see if the order of the keys is as expected
-export const object = defineProtocolType<
-  Record<string, unknown>,
-  Record<string, ProtocolType<unknown>>
->((obj) => {
-  return {
-    write: async (buffer, value) => {
-      for (const [key, type] of Object.entries(obj)) {
-        console.log(key, value);
+class ObjectType<T extends Record<string, unknown>> implements ProtocolType<T> {
+  constructor(private readonly schema: Record<string, ProtocolType<unknown>>) {}
+
+  async write(buffer: CustomBuffer, value: T) {
+    for (const [key, type] of Object.entries(this.schema)) {
+      try {
         await type.write(buffer, value[key]);
+      } catch (error) {
+        throw new Error(`Error writing key "${key}"`, {
+          cause: error,
+        });
       }
-    },
-    read: async (buffer) => {
-      const result: Record<string, unknown> = {};
-      for (const [key, type] of Object.entries(obj)) {
+    }
+  }
+
+  async read(buffer: CustomBuffer) {
+    const result: Record<string, unknown> = {};
+    for (const [key, type] of Object.entries(this.schema)) {
+      try {
         result[key] = await type.read(buffer);
+      } catch (error) {
+        throw new Error(`Error reading key "${key}"`, {
+          cause: error,
+        });
       }
-      return result;
-    },
-    typegen: async () => {
-      const properties: string[] = [];
-      const declarations = new Set<string>();
-      const imports: string[] = [];
-      for (const [key, protocolType] of Object.entries(obj)) {
-        const rawTypegen = protocolType.typegen?.();
-        const typegen =
-          rawTypegen instanceof Promise ? await rawTypegen : rawTypegen;
-        const type = typegen?.type ?? "unknown";
-        if (typegen?.declarations) {
-          typegen.declarations.forEach((declaration) =>
-            declarations.add(declaration),
-          );
-        }
-        if (typegen?.imports) {
-          imports.push(...typegen.imports);
-        }
+    }
+    return result as T;
+  }
 
-        properties.push(`${key}: ${type}`);
+  async typegen() {
+    const properties: string[] = [];
+    const declarations = new Set<string>();
+    const imports: string[] = [];
+    for (const [key, protocolType] of Object.entries(this.schema)) {
+      const rawTypegen = protocolType.typegen?.();
+      const typegen =
+        rawTypegen instanceof Promise ? await rawTypegen : rawTypegen;
+      const type = typegen?.type ?? "unknown";
+      if (typegen?.declarations) {
+        typegen.declarations.forEach((declaration) =>
+          declarations.add(declaration),
+        );
+      }
+      if (typegen?.imports) {
+        imports.push(...typegen.imports);
       }
 
-      return {
-        type: `{ ${properties} }`,
-        declarations: [...declarations],
-        imports,
-      };
-    },
-  };
-});
+      properties.push(`${key}: ${type}`);
+    }
+
+    return {
+      type: `{ ${properties} }`,
+      declarations: [...declarations],
+      imports,
+    };
+  }
+}
+export const object = <T extends Record<string, unknown>>(
+  schema: Record<PropertyKey, ProtocolType<unknown>>,
+) => new ObjectType<T>(schema);
 
 export * from "./types/json.js";
 export * from "./types/uuid.js";

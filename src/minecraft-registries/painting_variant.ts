@@ -1,3 +1,5 @@
+import type { NBTCompoundTag } from "../../packages/nbt/src/tags.js";
+
 export default {
   alban: {
     type: "compound",
@@ -1589,4 +1591,4 @@ export default {
       { type: "int", name: "width", value: 2 },
     ],
   },
-};
+} as Record<string, NBTCompoundTag>;

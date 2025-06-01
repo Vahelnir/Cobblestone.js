@@ -1,3 +1,5 @@
+import type { NBTCompoundTag } from "../../packages/nbt/src/tags.js";
+
 export default {
   arrow: {
     type: "compound",
@@ -638,4 +640,4 @@ export default {
       },
     ],
   },
-};
+} as Record<string, NBTCompoundTag>;

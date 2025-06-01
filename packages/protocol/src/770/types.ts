@@ -4,6 +4,24 @@ type JSONTextComponent = string;
 type UUID = string;
 type Identifier = string;
 type ByteArray = Buffer;
+type ChunkData = {
+  heightMaps: { type: number; data: bigint[] }[];
+  data: Buffer[];
+  blockEntities: {
+    packedXZ: PackedXZ;
+    y: number;
+    type: number;
+    data: NBTCompoundTag;
+  }[];
+};
+type LightData = {
+  skyLight: BitSet;
+  blockLight: BitSet;
+  emptySkyLight: BitSet;
+  emptyBlockLight: BitSet;
+  skyLightArrays: Buffer[];
+  blockLightArrays: Buffer[];
+};
 type Position = { x: number; y: number; z: number };
 
 export type ClientPacketMap = {
@@ -75,6 +93,11 @@ export type ClientPacketMap = {
       entries: { id: Identifier; data: NBTTag | undefined }[];
     };
   };
+  "play:level_chunk_with_light": {
+    id: 39;
+    name: "play:level_chunk_with_light";
+    data: { x: number; z: number; data: ChunkData; light: LightData };
+  };
   "play:login": {
     id: 43;
     name: "play:login";
@@ -101,6 +124,22 @@ export type ClientPacketMap = {
       portalCooldown: number;
       seaLevel: number;
       enforcesSecureChat: boolean;
+    };
+  };
+  "play:player_position": {
+    id: 65;
+    name: "play:player_position";
+    data: {
+      teleportId: number;
+      x: number;
+      y: number;
+      z: number;
+      velocityX: number;
+      velocityY: number;
+      velocityZ: number;
+      yaw: number;
+      pitch: number;
+      flags: number;
     };
   };
 };
@@ -172,6 +211,34 @@ export type ServerPacketMap = {
     id: 3;
     name: "configuration:finish_configuration";
     data: {};
+  };
+  "play:accept_teleportation": {
+    id: 0;
+    name: "play:accept_teleportation";
+    data: { teleportId: number };
+  };
+  "play:client_tick_end": { id: 11; name: "play:client_tick_end"; data: {} };
+  "play:custom_payload": {
+    id: 20;
+    name: "play:custom_payload";
+    data: { channel: Identifier; data: ByteArray };
+  };
+  "play:move_player_pos": {
+    id: 28;
+    name: "play:move_player_pos";
+    data: { x: number; feetY: number; z: number; flags: number };
+  };
+  "play:move_player_pos_rot": {
+    id: 29;
+    name: "play:move_player_pos_rot";
+    data: {
+      x: number;
+      feetY: number;
+      z: number;
+      yaw: number;
+      pitch: number;
+      flags: number;
+    };
   };
 };
 export type ServerPackets = ServerPacketMap[keyof ServerPacketMap];

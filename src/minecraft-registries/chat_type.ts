@@ -1,80 +1,318 @@
+import type { NBTCompoundTag } from "../../packages/nbt/src/tags.js";
+
 export default {
   chat: {
-    chat: {
-      parameters: ["sender", "content"],
-      translation_key: "chat.type.text",
-    },
-    narration: {
-      parameters: ["sender", "content"],
-      translation_key: "chat.type.text.narrate",
-    },
+    type: "compound",
+    name: "",
+    value: [
+      {
+        type: "compound",
+        name: "chat",
+        value: [
+          {
+            type: "list",
+            name: "parameters",
+            value: [
+              { type: "string", name: "", value: "sender" },
+              { type: "string", name: "", value: "content" },
+            ],
+          },
+          { type: "string", name: "translation_key", value: "chat.type.text" },
+        ],
+      },
+      {
+        type: "compound",
+        name: "narration",
+        value: [
+          {
+            type: "list",
+            name: "parameters",
+            value: [
+              { type: "string", name: "", value: "sender" },
+              { type: "string", name: "", value: "content" },
+            ],
+          },
+          {
+            type: "string",
+            name: "translation_key",
+            value: "chat.type.text.narrate",
+          },
+        ],
+      },
+    ],
   },
   emote_command: {
-    chat: {
-      parameters: ["sender", "content"],
-      translation_key: "chat.type.emote",
-    },
-    narration: {
-      parameters: ["sender", "content"],
-      translation_key: "chat.type.emote",
-    },
+    type: "compound",
+    name: "",
+    value: [
+      {
+        type: "compound",
+        name: "chat",
+        value: [
+          {
+            type: "list",
+            name: "parameters",
+            value: [
+              { type: "string", name: "", value: "sender" },
+              { type: "string", name: "", value: "content" },
+            ],
+          },
+          { type: "string", name: "translation_key", value: "chat.type.emote" },
+        ],
+      },
+      {
+        type: "compound",
+        name: "narration",
+        value: [
+          {
+            type: "list",
+            name: "parameters",
+            value: [
+              { type: "string", name: "", value: "sender" },
+              { type: "string", name: "", value: "content" },
+            ],
+          },
+          { type: "string", name: "translation_key", value: "chat.type.emote" },
+        ],
+      },
+    ],
   },
   msg_command_incoming: {
-    chat: {
-      parameters: ["sender", "content"],
-      style: {
-        color: "gray",
-        italic: true,
+    type: "compound",
+    name: "",
+    value: [
+      {
+        type: "compound",
+        name: "chat",
+        value: [
+          {
+            type: "list",
+            name: "parameters",
+            value: [
+              { type: "string", name: "", value: "sender" },
+              { type: "string", name: "", value: "content" },
+            ],
+          },
+          {
+            type: "compound",
+            name: "style",
+            value: [
+              { type: "string", name: "color", value: "gray" },
+              { type: "byte", name: "italic", value: 1 },
+            ],
+          },
+          {
+            type: "string",
+            name: "translation_key",
+            value: "commands.message.display.incoming",
+          },
+        ],
       },
-      translation_key: "commands.message.display.incoming",
-    },
-    narration: {
-      parameters: ["sender", "content"],
-      translation_key: "chat.type.text.narrate",
-    },
+      {
+        type: "compound",
+        name: "narration",
+        value: [
+          {
+            type: "list",
+            name: "parameters",
+            value: [
+              { type: "string", name: "", value: "sender" },
+              { type: "string", name: "", value: "content" },
+            ],
+          },
+          {
+            type: "string",
+            name: "translation_key",
+            value: "chat.type.text.narrate",
+          },
+        ],
+      },
+    ],
   },
   msg_command_outgoing: {
-    chat: {
-      parameters: ["target", "content"],
-      style: {
-        color: "gray",
-        italic: true,
+    type: "compound",
+    name: "",
+    value: [
+      {
+        type: "compound",
+        name: "chat",
+        value: [
+          {
+            type: "list",
+            name: "parameters",
+            value: [
+              { type: "string", name: "", value: "target" },
+              { type: "string", name: "", value: "content" },
+            ],
+          },
+          {
+            type: "compound",
+            name: "style",
+            value: [
+              { type: "string", name: "color", value: "gray" },
+              { type: "byte", name: "italic", value: 1 },
+            ],
+          },
+          {
+            type: "string",
+            name: "translation_key",
+            value: "commands.message.display.outgoing",
+          },
+        ],
       },
-      translation_key: "commands.message.display.outgoing",
-    },
-    narration: {
-      parameters: ["sender", "content"],
-      translation_key: "chat.type.text.narrate",
-    },
+      {
+        type: "compound",
+        name: "narration",
+        value: [
+          {
+            type: "list",
+            name: "parameters",
+            value: [
+              { type: "string", name: "", value: "sender" },
+              { type: "string", name: "", value: "content" },
+            ],
+          },
+          {
+            type: "string",
+            name: "translation_key",
+            value: "chat.type.text.narrate",
+          },
+        ],
+      },
+    ],
   },
   say_command: {
-    chat: {
-      parameters: ["sender", "content"],
-      translation_key: "chat.type.announcement",
-    },
-    narration: {
-      parameters: ["sender", "content"],
-      translation_key: "chat.type.text.narrate",
-    },
+    type: "compound",
+    name: "",
+    value: [
+      {
+        type: "compound",
+        name: "chat",
+        value: [
+          {
+            type: "list",
+            name: "parameters",
+            value: [
+              { type: "string", name: "", value: "sender" },
+              { type: "string", name: "", value: "content" },
+            ],
+          },
+          {
+            type: "string",
+            name: "translation_key",
+            value: "chat.type.announcement",
+          },
+        ],
+      },
+      {
+        type: "compound",
+        name: "narration",
+        value: [
+          {
+            type: "list",
+            name: "parameters",
+            value: [
+              { type: "string", name: "", value: "sender" },
+              { type: "string", name: "", value: "content" },
+            ],
+          },
+          {
+            type: "string",
+            name: "translation_key",
+            value: "chat.type.text.narrate",
+          },
+        ],
+      },
+    ],
   },
   team_msg_command_incoming: {
-    chat: {
-      parameters: ["target", "sender", "content"],
-      translation_key: "chat.type.team.text",
-    },
-    narration: {
-      parameters: ["sender", "content"],
-      translation_key: "chat.type.text.narrate",
-    },
+    type: "compound",
+    name: "",
+    value: [
+      {
+        type: "compound",
+        name: "chat",
+        value: [
+          {
+            type: "list",
+            name: "parameters",
+            value: [
+              { type: "string", name: "", value: "target" },
+              { type: "string", name: "", value: "sender" },
+              { type: "string", name: "", value: "content" },
+            ],
+          },
+          {
+            type: "string",
+            name: "translation_key",
+            value: "chat.type.team.text",
+          },
+        ],
+      },
+      {
+        type: "compound",
+        name: "narration",
+        value: [
+          {
+            type: "list",
+            name: "parameters",
+            value: [
+              { type: "string", name: "", value: "sender" },
+              { type: "string", name: "", value: "content" },
+            ],
+          },
+          {
+            type: "string",
+            name: "translation_key",
+            value: "chat.type.text.narrate",
+          },
+        ],
+      },
+    ],
   },
   team_msg_command_outgoing: {
-    chat: {
-      parameters: ["target", "sender", "content"],
-      translation_key: "chat.type.team.sent",
-    },
-    narration: {
-      parameters: ["sender", "content"],
-      translation_key: "chat.type.text.narrate",
-    },
+    type: "compound",
+    name: "",
+    value: [
+      {
+        type: "compound",
+        name: "chat",
+        value: [
+          {
+            type: "list",
+            name: "parameters",
+            value: [
+              { type: "string", name: "", value: "target" },
+              { type: "string", name: "", value: "sender" },
+              { type: "string", name: "", value: "content" },
+            ],
+          },
+          {
+            type: "string",
+            name: "translation_key",
+            value: "chat.type.team.sent",
+          },
+        ],
+      },
+      {
+        type: "compound",
+        name: "narration",
+        value: [
+          {
+            type: "list",
+            name: "parameters",
+            value: [
+              { type: "string", name: "", value: "sender" },
+              { type: "string", name: "", value: "content" },
+            ],
+          },
+          {
+            type: "string",
+            name: "translation_key",
+            value: "chat.type.text.narrate",
+          },
+        ],
+      },
+    ],
   },
-};
+} as Record<string, NBTCompoundTag>;

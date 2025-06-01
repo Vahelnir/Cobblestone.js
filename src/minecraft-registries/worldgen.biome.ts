@@ -1,3 +1,5 @@
+import type { NBTCompoundTag } from "../../packages/nbt/src/tags.js";
+
 export default {
   plains: {
     type: "compound",
@@ -421,4 +423,4 @@ export default {
       { type: "float", name: "temperature", value: 0.8 },
     ],
   },
-};
+} as Record<string, NBTCompoundTag>;

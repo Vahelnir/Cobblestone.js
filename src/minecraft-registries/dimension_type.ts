@@ -1,3 +1,5 @@
+import type { NBTCompoundTag } from "../../packages/nbt/src/tags.js";
+
 export default {
   overworld: {
     type: "compound",
@@ -133,4 +135,4 @@ export default {
       { type: "long", name: "fixed_time", value: 18000n },
     ],
   },
-};
+} as Record<string, NBTCompoundTag>;
