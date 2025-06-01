@@ -1,0 +1,25 @@
+{
+  "name": "@cobblestonejs/server",
+  "version": "0.1.0",
+  "description": "A Minecraft Server written in Typescript",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "tsx --conditions=development --watch src/index.ts",
+    "format": "prettier --write .",
+    "type-check": "tsc --noEmit"
+  },
+  "author": "Vahelnir",
+  "license": "MIT",
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.1",
+    "@types/node": "^22.15.18"
+  },
+  "dependencies": {
+    "@cobblestonejs/protocol": "workspace:*",
+    "@types/node-rsa": "^1.1.4",
+    "json-schema-to-typescript": "^15.0.4",
+    "node-rsa": "^1.1.1"
+  }
+}
