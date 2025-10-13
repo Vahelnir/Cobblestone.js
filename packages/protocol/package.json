@@ -25,8 +25,8 @@
     "@cobblestonejs/nbt": "workspace:*"
   },
   "devDependencies": {
-    "@tsconfig/node22": "^22.0.1",
-    "@types/node": "^22.15.18"
+    "@tsconfig/node22": "^22.0.2",
+    "@types/node": "^22.18.10"
   },
   "keywords": [],
   "author": "Vahelnir",

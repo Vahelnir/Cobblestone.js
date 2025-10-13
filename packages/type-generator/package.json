@@ -11,10 +11,10 @@
   "license": "MIT",
   "dependencies": {
     "@cobblestonejs/protocol": "workspace:*",
-    "commander": "^14.0.0"
+    "commander": "^14.0.1"
   },
   "devDependencies": {
-    "@tsconfig/node22": "^22.0.1",
-    "@types/node": "^22.15.18"
+    "@tsconfig/node22": "^22.0.2",
+    "@types/node": "^22.18.10"
   }
 }
