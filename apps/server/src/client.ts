@@ -1,13 +1,8 @@
 import { randomBytes } from "node:crypto";
 import type { Socket } from "node:net";
-import { createClient } from "@cobblestonejs/protocol";
+import { Connection, createClient } from "@cobblestonejs/protocol";
 import protocol770 from "@cobblestonejs/protocol/770";
 
-import type { Connection } from "../packages/protocol/src/connection.js";
-import type {
-  ChunkData,
-  ChunkSection,
-} from "../packages/protocol/src/protocol-definition/types/chunk-data.js";
 import cat_variant from "./minecraft-registries/cat_variant.js";
 import chicken_variant from "./minecraft-registries/chicken_variant.js";
 import cow_variant from "./minecraft-registries/cow_variant.js";

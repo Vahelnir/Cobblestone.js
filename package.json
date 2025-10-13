@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "server:dev": "pnpm run --filter @cobblestonejs/server dev",
+    "proxy:dev": "pnpm run --filter @cobblestonejs/proxy dev",
     "format": "pnpm run -r format"
   },
   "devDependencies": {
@@ -13,5 +14,5 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {},
-  "packageManager": "pnpm@10.6.3+sha512.bb45e34d50a9a76e858a95837301bfb6bd6d35aea2c5d52094fa497a467c43f5c440103ce2511e9e0a2f89c3d6071baac3358fc68ac6fb75e2ceb3d2736065e6"
+  "packageManager": "pnpm@10.18.2+sha512.9fb969fa749b3ade6035e0f109f0b8a60b5d08a1a87fdf72e337da90dcc93336e2280ca4e44f2358a649b83c17959e9993e777c2080879f3801e6f0d999ad3dd"
 }

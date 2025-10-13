@@ -1,5 +1,5 @@
 import { deepStrictEqual } from "node:assert";
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { it } from "node:test";
 
 import { NBTTag, parseNBT } from "../src";
@@ -14,4 +14,9 @@ it("should pass hello_world.nbt", async () => {
     name: "hello world",
     value: [{ type: "string", name: "name", value: "Bananrama" }],
   } satisfies NBTTag);
+});
+
+it("should read level_buzze.dat", async () => {
+  const file = await readFile("test/level_buzze.dat");
+  await parseNBT(file);
 });

@@ -4,6 +4,8 @@ import { CustomBuffer } from "@cobblestonejs/buffer";
 import { Connection } from "./connection.js";
 import type { Protocol } from "./protocol-definition/protocol.js";
 
+export { Connection } from "./connection.js";
+
 export type Packet<D = any> = {
   id: number;
   name: string;
@@ -56,14 +58,14 @@ export async function parse(
   const protocolStateDeclaration = state.protocol.states[state.protocolState];
   if (!protocolStateDeclaration) {
     throw new Error(
-      `Protocol state ${state.protocolState} not found in protocol.`,
+      `Protocol state '${state.protocolState}' not found in protocol.`,
     );
   }
   const packetDeclaration =
     protocolStateDeclaration.packets[state.bound][packetId];
   if (!packetDeclaration) {
     throw new Error(
-      `Packet ${packetId} not found in state ${state.protocolState}`,
+      `Packet '${packetId}' not found in state '${state.protocolState}' bound to '${state.bound}'.`,
     );
   }
 

@@ -26,17 +26,7 @@ export class Connection<
     super();
 
     socket.on("data", async (buffer) => {
-      console.log("Data received from client:", buffer);
-      if (this.decipher) {
-        buffer = this.decipher?.update(buffer);
-      }
-      const customBuffer = new CustomBuffer(buffer);
-      while (customBuffer.bytesAvailable > 0) {
-        const packet = await parse(state, customBuffer);
-        console.log("Parsed packet:", packet);
-        // @ts-expect-error
-        this.emit(packet.name, packet);
-      }
+      await this.readPacket(buffer, state);
     });
   }
 
@@ -93,6 +83,12 @@ export class Connection<
       this.socket.write(packetWithLength.buffer);
     }
 
+    packet.beforeEvent?.(this.state, {
+      id: packet.id,
+      name: `${packet.name}`,
+      data,
+    });
+
     // try parsing the packet to see if it works
     packetWithLength.position = 0; // Reset position for parsing
     const parsedPacket = await parse(
@@ -122,6 +118,21 @@ export class Connection<
       sharedSecret,
       sharedSecret,
     );
+  }
+
+  async readPacket(buffer: Buffer<ArrayBufferLike>, state: ConnectionState) {
+    if (this.decipher) {
+      buffer = this.decipher?.update(buffer);
+    }
+    console.log("Received buffer:", buffer);
+    const customBuffer = new CustomBuffer(buffer);
+    while (customBuffer.bytesAvailable > 0) {
+      const packet = await parse(state, customBuffer);
+      console.log("Parsed packet:", packet);
+      // @ts-expect-error
+      this.emit(packet.name, packet);
+    }
+    return buffer;
   }
 }
 

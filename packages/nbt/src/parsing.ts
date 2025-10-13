@@ -118,6 +118,7 @@ const TYPES: Partial<
     type: "byte_array",
     read(state) {
       const length = state.buffer.readInt32BE(state.cursor);
+      console.log("byte_array length:", length);
       state.cursor += 4;
       const value = state.buffer.subarray(state.cursor, state.cursor + length);
       state.cursor += length;
@@ -150,6 +151,7 @@ const TYPES: Partial<
       }
 
       const length = state.buffer.readInt32BE(state.cursor);
+      console.log("list length:", length);
       state.cursor += 4;
 
       const tags: NBTTag[] = [];
@@ -208,6 +210,7 @@ const TYPES: Partial<
     type: "int_array",
     read(state) {
       const length = state.buffer.readInt32BE(state.cursor);
+      console.log("int_array length:", length);
       state.cursor += 4;
       const value: number[] = [];
       for (let i = 0; i < length; i++) {
@@ -233,6 +236,7 @@ const TYPES: Partial<
     type: "long_array",
     read(state) {
       const length = state.buffer.readInt32BE(state.cursor);
+      console.log("long_array length:", length);
       state.cursor += 4;
       const value: bigint[] = [];
       for (let i = 0; i < length; i++) {
@@ -274,6 +278,8 @@ function writeString(str: string): Buffer {
 
 function readString(state: ParsingState): string {
   const nameLength = state.buffer.readUInt16BE(state.cursor);
+
+  console.log("string length:", nameLength);
   state.cursor += 2;
 
   const nameBuffer = state.buffer.subarray(

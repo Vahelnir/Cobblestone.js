@@ -24,6 +24,10 @@
     "@cobblestonejs/buffer": "workspace:*",
     "@cobblestonejs/nbt": "workspace:*"
   },
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.1",
+    "@types/node": "^22.15.18"
+  },
   "keywords": [],
   "author": "Vahelnir",
   "license": "MIT"

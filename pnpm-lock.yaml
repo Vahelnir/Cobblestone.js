@@ -21,6 +21,28 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
 
+  apps/proxy:
+    dependencies:
+      '@cobblestonejs/protocol':
+        specifier: workspace:*
+        version: link:../../packages/protocol
+      '@types/node-rsa':
+        specifier: ^1.1.4
+        version: 1.1.4
+      json-schema-to-typescript:
+        specifier: ^15.0.4
+        version: 15.0.4
+      node-rsa:
+        specifier: ^1.1.1
+        version: 1.1.1
+    devDependencies:
+      '@tsconfig/node22':
+        specifier: ^22.0.1
+        version: 22.0.1
+      '@types/node':
+        specifier: ^22.15.18
+        version: 22.15.18
+
   apps/server:
     dependencies:
       '@cobblestonejs/protocol':
@@ -59,6 +81,13 @@ importers:
       '@cobblestonejs/nbt':
         specifier: workspace:*
         version: link:../nbt
+    devDependencies:
+      '@tsconfig/node22':
+        specifier: ^22.0.1
+        version: 22.0.1
+      '@types/node':
+        specifier: ^22.15.18
+        version: 22.15.18
 
   packages/type-generator:
     dependencies:
@@ -69,9 +98,12 @@ importers:
         specifier: ^14.0.0
         version: 14.0.0
     devDependencies:
-      prettier:
-        specifier: ^3.5.3
-        version: 3.5.3
+      '@tsconfig/node22':
+        specifier: ^22.0.1
+        version: 22.0.1
+      '@types/node':
+        specifier: ^22.15.18
+        version: 22.15.18
 
 packages:
 
